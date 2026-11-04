@@ -16,8 +16,8 @@ class OllamaStub:
 	# Named after the models the baseline UI is imitating, so the picker in the
 	# interface and the backend catalogue stay a single source of truth.
 	MODELS = (
-		'claude-sonnet-4.5:latest',
-		'claude-opus-4.1:latest',
+		'claude-sonnet-5.5:latest',
+		'claude-opus-5:latest',
 		'claude-haiku-4.5:latest',
 	)
 

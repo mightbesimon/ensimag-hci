@@ -2,10 +2,14 @@ import { Icons } from './icons.js';
 
 const PIN_THRESHOLD = 120;
 
-const GREETINGS = Object.freeze([
-	[5, 'Good morning'],
-	[12, 'Good afternoon'],
-	[18, 'Good evening'],
+const RELATIVE = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+
+const UNITS = Object.freeze([
+	['year', 31536000],
+	['month', 2592000],
+	['day', 86400],
+	['hour', 3600],
+	['minute', 60],
 ]);
 
 /** The conversation column: welcome state, message turns and streaming. */
@@ -38,9 +42,9 @@ export class ChatView {
 		this.#welcome.hidden = Boolean(conversation);
 		this.#title.textContent = conversation ? conversation.title : '';
 
+		this.#composer.setPlaceholder(conversation ? 'thread' : 'fresh');
+
 		if (!conversation) {
-			this.#welcome.querySelector('.greeting-text').textContent =
-				`${this.#greeting()}, ${this.#store.user.name}`;
 			this.#welcome.querySelector('.composer-slot').append(this.#composer.element);
 			this.#messages.innerHTML = '';
 			this.#composer.focus();
@@ -49,7 +53,7 @@ export class ChatView {
 
 		this.#dock.querySelector('.composer-slot').append(this.#composer.element);
 		this.#messages.innerHTML = conversation.messages
-			.map((message, index) => this.#turn(message, index)).join('');
+			.map((message, index) => this.#turn(message, index, conversation)).join('');
 		Icons.paint(this.#messages);
 		this.#composer.focus();
 	}
@@ -98,16 +102,16 @@ export class ChatView {
 
 	async #generate() {
 		this.#composer.setBusy(true);
-		this.#store.append('assistant', '');
+		const conversation = this.#store.append('assistant', '');
 		this.#messages.insertAdjacentHTML(
 			'beforeend',
-			this.#turn({ role: 'assistant', content: '' }, this.#store.active.messages.length - 1, true),
+			this.#turn({ role: 'assistant', content: '' }, conversation.messages.length - 1, conversation, true),
 		);
 
 		const pending = this.#messages.lastElementChild;
 		Icons.paint(pending);
 		const prose = pending.querySelector('.prose');
-		const history = this.#store.active.messages.slice(0, -1);
+		const history = conversation.messages.slice(0, -1);
 		let text = '';
 
 		for await (const fragment of this.#client.stream(this.#composer.model, history)) {
@@ -121,20 +125,39 @@ export class ChatView {
 		this.render();
 	}
 
-	#turn(message, index, streaming = false) {
+	#turn(message, index, conversation, streaming = false) {
+		const when = this.#relative(message.at || conversation.updated);
+
 		if (message.role === 'user') {
 			return `<article class="turn turn-user" data-index="${index}">`
-				+ `<div class="bubble">${this.#renderer.escape(message.content)}</div></article>`;
+				+ `<div class="bubble">${this.#renderer.escape(message.content)}</div>`
+				+ '<div class="turn-actions">'
+				+ `<span class="turn-time">${when}</span>`
+				+ this.#action('copy', 'copy', 'Copy')
+				+ '</div></article>';
 		}
 
 		return `<article class="turn turn-assistant" data-index="${index}">`
 			+ `<div class="prose${streaming ? ' is-streaming' : ''}">${this.#renderer.render(message.content)}</div>`
 			+ '<div class="turn-actions">'
-			+ '<button type="button" class="icon-btn" data-action="copy" data-icon="copy" title="Copy"></button>'
-			+ '<button type="button" class="icon-btn" data-action="retry" data-icon="retry" title="Retry"></button>'
-			+ '<button type="button" class="icon-btn" data-action="rate" data-icon="thumbUp" title="Good response"></button>'
-			+ '<button type="button" class="icon-btn" data-action="rate" data-icon="thumbDown" title="Bad response"></button>'
+			+ this.#action('copy', 'copy', 'Copy')
+			+ this.#action('', 'readAloud', 'Read aloud')
+			+ this.#action('rate', 'thumbUp', 'Good response')
+			+ this.#action('rate', 'thumbDown', 'Bad response')
+			+ this.#action('retry', 'retry', 'Retry')
+			+ `<span class="turn-time">${when}</span>`
 			+ '</div></article>';
+	}
+
+	#action(action, icon, label) {
+		return `<button type="button" class="icon-btn"${action ? ` data-action="${action}"` : ''}`
+			+ ` data-icon="${icon}" aria-label="${label}" title="${label}"></button>`;
+	}
+
+	#relative(iso) {
+		const seconds = (new Date(iso).getTime() - Date.now()) / 1000;
+		const [unit, size] = UNITS.find(([, span]) => Math.abs(seconds) >= span) || ['second', 1];
+		return RELATIVE.format(Math.round(seconds / size), unit);
 	}
 
 	async #copy(text, button) {
@@ -142,12 +165,6 @@ export class ChatView {
 		await navigator.clipboard.writeText(text);
 		button.textContent = 'Copied';
 		setTimeout(() => { button.innerHTML = original; }, 1200);
-	}
-
-	#greeting() {
-		const hour = new Date().getHours();
-		const match = [...GREETINGS].reverse().find(([from]) => hour >= from);
-		return match ? match[1] : 'Good evening';
 	}
 
 	#keepPinned() {

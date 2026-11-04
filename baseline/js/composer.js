@@ -1,4 +1,7 @@
-const MAX_ROWS_HEIGHT = 320;
+const MAX_ROWS_HEIGHT = 384;
+
+// claude.ai prompts differently on the new-chat screen and inside a thread.
+const PLACEHOLDERS = Object.freeze({ fresh: 'How can I help you today?', thread: 'Reply' });
 
 /** The prompt box: auto-growing textarea, model picker and send button. */
 export class Composer {
@@ -41,6 +44,10 @@ export class Composer {
 		this.#busy = busy;
 		this.#textarea.disabled = busy;
 		this.#refreshSend();
+	}
+
+	setPlaceholder(state) {
+		this.#textarea.placeholder = PLACEHOLDERS[state];
 	}
 
 	focus() {
@@ -101,12 +108,18 @@ export class Composer {
 	#label(name) {
 		return name
 			.replace(/:latest$/, '')
+			.replace(/^claude-/, '')
 			.split('-')
-			.map((part) => (/^[a-z]/.test(part) ? part[0].toUpperCase() + part.slice(1) : part))
+			.map((part) => part[0].toUpperCase() + part.slice(1))
 			.join(' ');
 	}
 
 	#grow() {
+		// An empty box is one row by default, so leave it unmeasured.
+		if (!this.#textarea.value) {
+			this.#textarea.style.height = '';
+			return;
+		}
 		this.#textarea.style.height = 'auto';
 		this.#textarea.style.height = `${Math.min(this.#textarea.scrollHeight, MAX_ROWS_HEIGHT)}px`;
 	}

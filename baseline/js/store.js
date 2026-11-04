@@ -46,7 +46,7 @@ export class ConversationStore {
 	/** Creates the conversation on the first message, the way Claude does. */
 	append(role, content) {
 		const conversation = this.active || this.#create(content);
-		conversation.messages.push({ role, content });
+		conversation.messages.push({ role, content, at: new Date().toISOString() });
 		conversation.updated = new Date().toISOString();
 		this.#commit();
 		return conversation;

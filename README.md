@@ -62,17 +62,33 @@ identical state.
 Conversation state lives in `localStorage` under `hci-baseline`. To reset a browser by
 hand between participants, clear site data for `localhost:11434`.
 
-## Known gaps
+## Fidelity
 
-- **Fonts.** claude.ai ships Styrene and Copernicus, which are not redistributable. The
-  stylesheet falls back to system sans and system serif, so letterforms differ even
-  though weight, size and spacing match.
-- **Theme follows the OS.** There is no in-app toggle. For the study, decide light or
-  dark once and set every machine the same way, or participants see different interfaces.
-- **Markdown is a subset** — headings, bold, italic, inline and fenced code, lists,
-  blockquotes, rules and links. No tables, nested lists or images. The seed conversation
-  must stay inside that subset.
-- **Decorative controls.** The `+` and Tools buttons, and the thumb ratings, are inert.
-  The model picker is live but every model returns the same generator.
-- Port `11434` is Ollama's own. If a real Ollama daemon is ever installed on the same
-  machine, one of the two has to move (`PORT` in `serve.py`).
+The palette, type scale, spacing and radii in `baseline/style.css` are transcribed
+from claude.ai's own critical CSS (its `cds-*` design tokens) at density
+`comfortable`, rather than eyeballed: white page / `#fafafa` sidebar in light,
+`#191919` / `#1f1f1f` in dark, blue accent `hsl(213 68% 45%)`, prose at 1rem.
+Clay `#d97757` is the logo spark only. Assistant replies render in the serif face
+and user messages in the sans one, as the app does (`data-reply-face="serif"`).
+
+### Known gaps
+
+- **Fonts.** claude.ai ships `anthropic-sans` and `anthropic-serif`, which are not
+  redistributable. The stylesheet uses the same fallback stacks the app declares
+  behind them (system sans, Georgia), so letterforms differ while sizes and
+  spacing match.
+- **Theme follows the OS.** There is no in-app toggle. For the study, decide light
+  or dark once and set every machine the same way, or participants see different
+  interfaces.
+- **Markdown is a subset** - headings, bold, italic, inline and fenced code, lists,
+  blockquotes, rules and links. No tables, nested lists or images. The seed
+  conversation must stay inside that subset.
+- **Decorative controls.** The nav rows (Projects, Artifacts, Scheduled, Design,
+  Customize), the mode switch, Share, attach, dictate, Manual and the thumb
+  ratings are inert, and Search does not open the command palette. They are there
+  for visual fidelity; if a participant clicking a dead control would hurt the
+  study, remove them from `baseline/index.html` rather than adding behaviour.
+- **User-message actions** are the timestamp and copy only; real Claude also offers
+  retry and edit from a user turn.
+- Port `11434` is Ollama's own. If a real Ollama daemon is ever installed on the
+  same machine, one of the two has to move (`PORT` in `serve.py`).
