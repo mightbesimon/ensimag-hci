@@ -5,7 +5,7 @@
 			"name": "baseline",
 			"runtimeExecutable": "python3",
 			"runtimeArgs": ["serve.py"],
-			"port": 11434
+			"port": 8080
 		}
 	]
 }

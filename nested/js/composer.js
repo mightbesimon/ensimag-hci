@@ -33,11 +33,16 @@ export class Composer {
 		return this.#modelButton.dataset.model;
 	}
 
-	setModels(names) {
-		this.#modelMenu.innerHTML = names
-			.map((name) => `<button type="button" role="option" data-model="${name}">${this.#label(name)}</button>`)
-			.join('');
-		this.#selectModel(names[0]);
+	setModels(models) {
+		this.#modelMenu.innerHTML = models.map((model) => {
+			const detail = model.detail ? `<small>${model.detail}</small>` : '';
+			return `<button type="button" role="option" data-model="${model.name}"`
+				+ `${model.available ? '' : ' disabled'}>`
+				+ `<span>${this.#label(model.name)}</span>${detail}</button>`;
+		}).join('');
+
+		const usable = models.find((model) => model.available) || models[0];
+		this.#selectModel(usable.name);
 	}
 
 	setBusy(busy) {

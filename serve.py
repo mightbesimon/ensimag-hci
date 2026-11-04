@@ -5,9 +5,7 @@
 from http.server import ThreadingHTTPServer
 
 from server.handler import RequestHandler
-
-HOST = '127.0.0.1'
-PORT = 11434  # the real Ollama port, so Ollama clients work against this unchanged
+from server.settings import HOST, PORT
 
 
 class Application:
