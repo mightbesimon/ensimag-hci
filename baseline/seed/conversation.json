@@ -1,0 +1,62 @@
+{
+	"version": 1,
+	"user": {
+		"name": "Simon",
+		"plan": "Pro plan"
+	},
+	"conversations": [
+		{
+			"id": "placeholder-main",
+			"title": "PLACEHOLDER — scripted study conversation",
+			"updated": "2026-11-04T10:12:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"content": "This conversation is a placeholder. Replace the contents of baseline/seed/conversation.json with the scripted multi-topic conversation from the experimental plan, and bump \"version\" so every browser re-seeds."
+				},
+				{
+					"role": "assistant",
+					"content": "Understood. The loader reads this file on first load and writes it into `localStorage`.\n\n## What to put here\n\n- **Topics** — several subjects discussed crisscross, so answers are not found in document order.\n- **Findable facts** — one retrievable detail per study question, buried mid-answer rather than in a heading.\n- **Length** — long enough that scrolling is the only option in the baseline condition.\n\nMarkdown is rendered, so headings, lists, bold, inline `code` and fenced blocks all work."
+				},
+				{
+					"role": "user",
+					"content": "How do I re-seed after editing the file?"
+				},
+				{
+					"role": "assistant",
+					"content": "Increment the top-level `version` number. The loader compares it against the stored copy and replaces the stored conversations when they differ, so participants always start from the same state."
+				}
+			]
+		},
+		{
+			"id": "placeholder-second",
+			"title": "PLACEHOLDER — second chat",
+			"updated": "2026-11-03T16:40:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"content": "A second conversation so the Recents list is not empty."
+				},
+				{
+					"role": "assistant",
+					"content": "Every entry in `conversations` becomes one row under **Recents** in the sidebar."
+				}
+			]
+		},
+		{
+			"id": "placeholder-third",
+			"title": "PLACEHOLDER — third chat",
+			"updated": "2026-10-29T09:05:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"content": "And a third."
+				},
+				{
+					"role": "assistant",
+					"content": "New chats started in the interface are appended to the same store and appear here too."
+				}
+			]
+		}
+	]
+}

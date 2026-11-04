@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Claude</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="app" id="app">
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-head">
+				<span class="brand"><span class="brand-mark" data-icon="mark"></span><span>Claude</span></span>
+				<button type="button" class="icon-btn" id="collapse" data-icon="sidebar" title="Close sidebar"></button>
+			</div>
+
+			<button type="button" class="new-chat" id="new-chat">
+				<span data-icon="newChat"></span><span>New chat</span>
+			</button>
+
+			<label class="sidebar-search">
+				<span data-icon="search"></span>
+				<input type="search" class="sidebar-search-input" placeholder="Search chats" aria-label="Search chats">
+			</label>
+
+			<nav class="recents" aria-label="Recent chats">
+				<h2 class="recents-head">Recents</h2>
+				<ul class="recents-list"></ul>
+			</nav>
+
+			<div class="sidebar-foot">
+				<span class="avatar"></span>
+				<span class="user-text">
+					<strong class="user-name"></strong>
+					<small class="user-plan"></small>
+				</span>
+			</div>
+		</aside>
+
+		<main class="main">
+			<header class="topbar">
+				<button type="button" class="icon-btn topbar-expand" id="expand" data-icon="sidebar" title="Open sidebar"></button>
+				<span class="topbar-title" id="chat-title"></span>
+			</header>
+
+			<div class="thread" id="thread">
+				<section class="welcome" id="welcome" hidden>
+					<h1 class="greeting">
+						<span class="greeting-mark" data-icon="mark"></span>
+						<span class="greeting-text"></span>
+					</h1>
+					<div class="composer-slot"></div>
+				</section>
+				<div class="messages" id="messages"></div>
+			</div>
+
+			<div class="dock" id="dock">
+				<div class="composer-slot"></div>
+				<p class="disclaimer">Claude can make mistakes. Please double-check responses.</p>
+			</div>
+		</main>
+	</div>
+
+	<form class="composer" id="composer" autocomplete="off">
+		<textarea class="composer-input" rows="1" placeholder="How can I help you today?" aria-label="Message Claude"></textarea>
+		<div class="composer-bar">
+			<div class="composer-tools">
+				<button type="button" class="icon-btn" data-icon="plus" title="Add content"></button>
+				<button type="button" class="pill" title="Tools"><span data-icon="tools"></span><span>Tools</span></button>
+			</div>
+			<div class="composer-right">
+				<div class="model-picker">
+					<button type="button" class="model-button" aria-haspopup="listbox">
+						<span class="model-label"></span><span data-icon="chevron"></span>
+					</button>
+					<div class="model-menu" role="listbox" hidden></div>
+				</div>
+				<button type="submit" class="composer-send" disabled title="Send" data-icon="send"></button>
+			</div>
+		</div>
+	</form>
+
+	<script type="module" src="js/main.js"></script>
+</body>
+</html>
