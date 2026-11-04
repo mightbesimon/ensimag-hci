@@ -123,10 +123,15 @@ export class ChatView {
 		const history = conversation.messages.slice(0, -1);
 		let text = '';
 
-		for await (const fragment of this.#client.stream(this.#composer.model, history)) {
-			text += fragment;
+		try {
+			for await (const fragment of this.#client.stream(this.#composer.model, history)) {
+				text += fragment;
+				prose.innerHTML = this.#renderer.render(text);
+				this.#followTail();
+			}
+		} catch (error) {
+			text = `**Could not get a reply.** ${error.message}`;
 			prose.innerHTML = this.#renderer.render(text);
-			this.#followTail();
 		}
 
 		this.#store.replaceLast(text);

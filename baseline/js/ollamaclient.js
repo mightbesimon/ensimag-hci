@@ -1,10 +1,16 @@
-/** Talks to the Ollama chat API over NDJSON. Works against the stub backend in
+/** Talks to the chat API over NDJSON. Works against the stub backend in
  *  server/ and against a real Ollama daemon without change. */
 export class OllamaClient {
+	/** `available` and `detail` are this server's additions to Ollama's payload:
+	 *  an entry backed by a real daemon is unusable when none is running. */
 	async models() {
 		const response = await fetch('/api/tags');
 		const payload = await response.json();
-		return payload.models.map((entry) => entry.name);
+		return payload.models.map((entry) => ({
+			name: entry.name,
+			available: entry.available !== false,
+			detail: entry.detail || '',
+		}));
 	}
 
 	/** Yields content fragments as they arrive. */
@@ -14,6 +20,8 @@ export class OllamaClient {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ model, messages, stream: true }),
 		});
+
+		if (!response.ok) throw new Error(await this.#reason(response));
 
 		const reader = response.body.getReader();
 		const decoder = new TextDecoder();
@@ -34,5 +42,10 @@ export class OllamaClient {
 				yield payload.message.content;
 			}
 		}
+	}
+
+	async #reason(response) {
+		const payload = await response.json().catch(() => null);
+		return (payload && payload.error) || `The server returned ${response.status}.`;
 	}
 }

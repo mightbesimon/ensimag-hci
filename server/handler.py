@@ -7,7 +7,7 @@ from urllib.error import HTTPError, URLError
 
 from .daemon import OllamaDaemon
 from .ollama import OllamaStub
-from .outline import OutlineBuilder
+from .outline import ModelOutline, OutlineBuilder
 from .settings import LIVE_MODEL, OLLAMA_MODEL, OLLAMA_URL
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,8 +29,8 @@ class RequestHandler(SimpleHTTPRequestHandler):
 	protocol_version = 'HTTP/1.1'
 
 	stub = OllamaStub()
-	outline = OutlineBuilder()
 	daemon = OllamaDaemon(OLLAMA_URL)
+	outline = ModelOutline(daemon, OutlineBuilder(), OLLAMA_MODEL)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, directory=DEFAULT_ROOT, **kwargs)
@@ -161,7 +161,10 @@ class RequestHandler(SimpleHTTPRequestHandler):
 		return final
 
 	def _outline(self, request, messages):
-		self._send_json(200, self.outline.build(messages))
+		"""The live model groups the conversation itself when it is selected;
+		otherwise the stub does, so the sidebar fills either way."""
+		live = request.get('model') == LIVE_MODEL and self.daemon.available()
+		self._send_json(200, self.outline.build(messages, live=live))
 
 	def _read_json(self):
 		length = int(self.headers.get('Content-Length') or 0)

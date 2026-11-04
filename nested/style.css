@@ -217,7 +217,7 @@ button {
 }
 
 /* Two panes side by side; opening a conversation slides the chat list away and
-   brings its table of contents in. */
+	brings its table of contents in. */
 .pane-track {
 	display: flex;
 	flex: 1;
@@ -301,11 +301,11 @@ button {
 }
 
 /* Key points sit under their topic; the indent is on the row, so the current
-   marker below still runs down the far left of the outline. */
+	marker below still runs down the far left of the outline. */
 .contents-item.is-point { padding-left: 2.25rem; }
 
 /* A straight full-height rule at the left edge, as Google Docs' outline draws
-   it — on the item rather than the rounded row, so it is not clipped round. */
+	it — on the item rather than the rounded row, so it is not clipped round. */
 .contents-item.is-current::before {
 	content: '';
 	position: absolute;
@@ -734,7 +734,7 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 }
 
 /* Floats over the transcript just above the composer, as claude.ai's
-   jump-to-latest control does. */
+	jump-to-latest control does. */
 .jump-to-latest {
 	display: inline-flex;
 	position: absolute;
@@ -840,7 +840,7 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 .chin-centre a:hover { text-decoration: underline; }
 
 /* Flex, not block: a block wrapper would add a line box around the inline-flex
-   button and sit it 2px above the neighbouring controls. */
+	button and sit it 2px above the neighbouring controls. */
 .model-picker {
 	display: flex;
 	position: relative;
@@ -907,3 +907,23 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	.pane-track { transition: none; }
 	.contents-caret [data-icon] { transition: none; }
 }
+
+.model-menu button {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.1rem;
+}
+
+.model-menu button small {
+	color: var(--text-muted);
+	font-size: var(--size-footnote);
+}
+
+/* An entry backed by a daemon that is not running stays listed but unusable. */
+.model-menu button:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.model-menu button:disabled:hover { background: none; }

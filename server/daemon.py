@@ -16,6 +16,9 @@ PROBE_CACHE_SECONDS = 5
 # Generous: a local model on CPU can take a long time to answer.
 CHAT_TIMEOUT = 600
 
+# Outlining is a short structured answer, but still slow on CPU.
+COMPLETE_TIMEOUT = 180
+
 
 class OllamaDaemon:
 	"""Reports what a local daemon has pulled, and relays chat to it."""
@@ -51,6 +54,20 @@ class OllamaDaemon:
 			method='POST',
 		)
 		return urlopen(request, timeout=CHAT_TIMEOUT)
+
+	def complete(self, model, messages, json_only=False):
+		"""One non-streaming answer. Raises if the daemon refuses."""
+		body = {'model': model, 'messages': messages, 'stream': False}
+		if json_only:
+			body['format'] = 'json'
+		request = Request(
+			self._url + '/api/chat',
+			data=json.dumps(body).encode('utf-8'),
+			headers={'Content-Type': 'application/json'},
+			method='POST',
+		)
+		with urlopen(request, timeout=COMPLETE_TIMEOUT) as response:
+			return json.load(response).get('message', {}).get('content', '')
 
 	def _probe(self):
 		try:

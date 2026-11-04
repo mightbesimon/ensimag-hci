@@ -582,7 +582,7 @@ button {
 }
 
 /* Floats over the transcript just above the composer, as claude.ai's
-   jump-to-latest control does. */
+	jump-to-latest control does. */
 .jump-to-latest {
 	display: inline-flex;
 	position: absolute;
@@ -688,7 +688,7 @@ button {
 .chin-centre a:hover { text-decoration: underline; }
 
 /* Flex, not block: a block wrapper would add a line box around the inline-flex
-   button and sit it 2px above the neighbouring controls. */
+	button and sit it 2px above the neighbouring controls. */
 .model-picker {
 	display: flex;
 	position: relative;
@@ -753,3 +753,23 @@ button {
 	.topbar-expand { animation: none; }
 	.jump-to-latest { transition: none; }
 }
+
+.model-menu button {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.1rem;
+}
+
+.model-menu button small {
+	color: var(--text-muted);
+	font-size: var(--size-footnote);
+}
+
+/* An entry backed by a daemon that is not running stays listed but unusable. */
+.model-menu button:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.model-menu button:disabled:hover { background: none; }

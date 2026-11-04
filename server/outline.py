@@ -20,6 +20,7 @@ fakes it two ways:
 """
 import copy
 import hashlib
+import json
 import random
 import re
 
@@ -157,3 +158,112 @@ class OutlineBuilder:
 
 	def _key(self, content):
 		return ' '.join(content.split()).lower()
+
+
+# Hard caps on whatever the model returns: the rail is narrow, and a model that
+# ignores the instruction must not be able to break the layout.
+TITLE_CHARS = 34
+MAX_TOPICS = 12
+MAX_POINTS = 6
+
+BRIEF = (
+	'You label a conversation for a narrow navigation sidebar, like the outline '
+	'pane in Google Docs.\n\n'
+	'Group the user messages below into topics. A topic is a PHASE of the '
+	'conversation spanning several messages, not one per message: aim for one '
+	'topic per four to six messages, and a short conversation may have only one. '
+	'Inside each topic list one to three key points.\n\n'
+	'Reply with JSON only, in exactly this shape:\n'
+	'{"topics":[{"title":"...","start":0,"points":[{"title":"...","start":0}]}]}\n\n'
+	'Rules:\n'
+	'- "start" must be one of the message numbers listed below.\n'
+	'- Use increasing message numbers.\n'
+	'- Titles are at most four words and have no trailing punctuation. They go '
+	'in a narrow sidebar, so keep them short enough to read at a glance.\n'
+	'- Name what the stretch is about, do not quote the message.\n'
+)
+
+
+class ModelOutline:
+	"""Asks a local model to do the grouping, and falls back to the stub.
+
+	Anything the model returns is validated against the real message indices
+	before it reaches the interface: a local model will sometimes return prose,
+	invalid JSON, or indices that do not exist, and none of that should leave
+	the sidebar empty.
+	"""
+
+	def __init__(self, daemon, fallback, model_name):
+		self._daemon = daemon
+		self._fallback = fallback
+		self._model_name = model_name
+
+	def build(self, messages, live=False):
+		if live:
+			asked = self._ask(messages)
+			if asked:
+				return {'topics': asked}
+		return self._fallback.build(messages)
+
+	def _ask(self, messages):
+		numbered = [(index, message.get('content', ''))
+		            for index, message in enumerate(messages)
+		            if message.get('role') == 'user']
+		if not numbered:
+			return None
+
+		model = self._model_name or next(iter(self._daemon.models()), None)
+		if not model:
+			return None
+
+		listing = '\n'.join('[{}] {}'.format(index, ' '.join(text.split())[:200])
+		                    for index, text in numbered)
+		try:
+			reply = self._daemon.complete(
+				model,
+				[
+					{'role': 'system', 'content': BRIEF},
+					{'role': 'user', 'content': listing},
+				],
+				json_only=True,
+			)
+		except Exception:
+			return None
+
+		return self._clean(reply, {index for index, _ in numbered})
+
+	def _clean(self, reply, valid):
+		try:
+			payload = json.loads(reply)
+		except (TypeError, ValueError):
+			return None
+		if not isinstance(payload, dict):
+			return None
+
+		topics = []
+		for raw in payload.get('topics') or []:
+			topic = self._entry(raw, valid)
+			if not topic:
+				continue
+			topic['points'] = [point for point in
+			                   (self._entry(item, valid) for item in (raw.get('points') or []))
+			                   if point][:MAX_POINTS]
+			for point in topic['points']:
+				point.pop('points', None)
+			topics.append(topic)
+
+		topics.sort(key=lambda topic: topic['start'])
+		return topics[:MAX_TOPICS] or None
+
+	def _entry(self, raw, valid):
+		if not isinstance(raw, dict):
+			return None
+		title = ' '.join(str(raw.get('title') or '').split())
+		if len(title) > TITLE_CHARS:
+			# Trim back to a word boundary rather than cutting mid-word.
+			title = title[:TITLE_CHARS].rsplit(' ', 1)[0]
+		title = title.strip(' .,:;-')
+		start = raw.get('start')
+		if not title or not isinstance(start, int) or isinstance(start, bool) or start not in valid:
+			return None
+		return {'title': title, 'start': start, 'points': []}

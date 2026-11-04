@@ -35,7 +35,7 @@ const contents = new TableOfContents(
 	elements,
 );
 const view = new ChatView(elements, store, client, new MarkdownRenderer(), composer, {
-	onUpdate: (conversation) => (conversation ? contents.show(conversation) : contents.clear()),
+	onUpdate: (conversation) => (conversation ? contents.show(conversation, composer.model) : contents.clear()),
 	onScroll: () => contents.markPosition(),
 });
 

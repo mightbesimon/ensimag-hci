@@ -18,6 +18,7 @@ export class TableOfContents {
 	#topics = [];
 	#collapsed = new Set();
 	#conversationId = null;
+	#signature = null;
 	#pending = false;
 
 	constructor(element, client, { thread, messages }) {
@@ -32,19 +33,31 @@ export class TableOfContents {
 		this.#bind();
 	}
 
-	async show(conversation) {
+	async show(conversation, model) {
 		if (conversation.id !== this.#conversationId) {
 			this.#conversationId = conversation.id;
 			this.#collapsed.clear();
 			this.#search.value = '';
 		}
 		this.#title.textContent = conversation.title;
-		this.#topics = await this.#client.outline(conversation.messages);
+
+		// Outlining can mean a round trip to a local model, so only ask again
+		// once the conversation has actually gained a turn.
+		const signature = `${conversation.id}:${model}:${this.#prompts(conversation)}`;
+		if (signature !== this.#signature) {
+			this.#signature = signature;
+			this.#topics = await this.#client.outline(conversation.messages, model);
+		}
 		this.#render();
+	}
+
+	#prompts(conversation) {
+		return conversation.messages.filter((message) => message.role === 'user').length;
 	}
 
 	clear() {
 		this.#conversationId = null;
+		this.#signature = null;
 		this.#topics = [];
 		this.#collapsed.clear();
 		this.#search.value = '';
