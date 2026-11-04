@@ -28,6 +28,7 @@ export class ChatView {
 	#jump;
 	#onUpdate;
 	#onScroll;
+	#pinned;
 
 	constructor(elements, store, client, renderer, composer, listeners) {
 		this.#thread = elements.thread;
@@ -55,6 +56,7 @@ export class ChatView {
 		if (!conversation) {
 			this.#welcome.querySelector('.composer-slot').append(this.#composer.element);
 			this.#messages.innerHTML = '';
+			this.#pinned?.disconnect();
 			this.#composer.focus();
 			this.#refreshJump();
 			this.#onUpdate(null);
@@ -62,9 +64,13 @@ export class ChatView {
 		}
 
 		this.#dock.querySelector('.composer-slot').append(this.#composer.element);
-		this.#messages.innerHTML = conversation.messages
-			.map((message, index) => this.#turn(message, index, conversation)).join('');
+		this.#messages.innerHTML = this.#exchanges(conversation.messages)
+			.map((turns) => '<section class="exchange"><div class="exchange-top" aria-hidden="true"></div>'
+				+ turns.map(({ message, index }) => this.#turn(message, index, conversation)).join('')
+				+ '</section>')
+			.join('');
 		Icons.paint(this.#messages);
+		this.#watchPins();
 		this.#composer.focus();
 		this.#refreshJump();
 		this.#onUpdate(conversation);
@@ -121,12 +127,13 @@ export class ChatView {
 	async #generate() {
 		this.#composer.setBusy(true);
 		const conversation = this.#store.append('assistant', '');
-		this.#messages.insertAdjacentHTML(
+		const exchange = this.#messages.lastElementChild;
+		exchange.insertAdjacentHTML(
 			'beforeend',
 			this.#turn({ role: 'assistant', content: '' }, conversation.messages.length - 1, conversation, true),
 		);
 
-		const pending = this.#messages.lastElementChild;
+		const pending = exchange.lastElementChild;
 		Icons.paint(pending);
 		const prose = pending.querySelector('.prose');
 		const history = conversation.messages.slice(0, -1);
@@ -148,16 +155,39 @@ export class ChatView {
 		this.render();
 	}
 
+	/** Marks an exchange whose prompt has pinned, so the reply can be faded as it
+	 *  slides underneath rather than being cut off square. */
+	#watchPins() {
+		this.#pinned?.disconnect();
+		this.#pinned = new IntersectionObserver(
+			(entries) => entries.forEach((entry) => {
+				const above = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+				entry.target.parentElement.classList.toggle('is-pinned', above);
+			}),
+			{ root: this.#thread },
+		);
+		this.#messages.querySelectorAll('.exchange-top')
+			.forEach((marker) => this.#pinned.observe(marker));
+	}
+
+	/** One prompt and the replies beneath it. */
+	#exchanges(messages) {
+		const groups = [];
+		messages.forEach((message, index) => {
+			if (message.role === 'user' || !groups.length) groups.push([]);
+			groups[groups.length - 1].push({ message, index });
+		});
+		return groups;
+	}
+
 	#turn(message, index, conversation, streaming = false) {
 		const when = this.#relative(message.at || conversation.updated);
 
+		// A prompt carries no actions here: it pins to the top while its reply is
+		// read, so anything attached to it would hang over the transcript.
 		if (message.role === 'user') {
 			return `<article class="turn turn-user" data-index="${index}">`
-				+ `<div class="bubble">${this.#renderer.escape(message.content)}</div>`
-				+ '<div class="turn-actions">'
-				+ `<span class="turn-time">${when}</span>`
-				+ this.#action('copy', 'copy', 'Copy')
-				+ '</div></article>';
+				+ `<div class="bubble">${this.#renderer.escape(message.content)}</div></article>`;
 		}
 
 		return `<article class="turn turn-assistant" data-index="${index}">`

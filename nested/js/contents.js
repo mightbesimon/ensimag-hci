@@ -89,14 +89,16 @@ export class TableOfContents {
 			if (!row) return;
 			const target = this.#messages.querySelector(row.dataset.anchor);
 			if (!target) return;
-			target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+			// A pinned prompt reports where it is stuck, not where it sits in the
+			// flow, so scrolling to it lands wrong. Scroll its exchange instead.
+			(target.closest('.exchange') || target).scrollIntoView({ block: 'start', behavior: 'smooth' });
 		});
 	}
 
 	#toggle(index) {
 		if (this.#collapsed.has(index)) this.#collapsed.delete(index);
 		else this.#collapsed.add(index);
-		this.#render();
+		this.#settle();
 	}
 
 	/** Collapses every topic, or expands them all once they already are. */
@@ -104,7 +106,14 @@ export class TableOfContents {
 		const foldable = this.#foldable();
 		if (foldable.every((index) => this.#collapsed.has(index))) this.#collapsed.clear();
 		else foldable.forEach((index) => this.#collapsed.add(index));
-		this.#render();
+		this.#settle();
+	}
+
+	/** Re-applies collapse state without rebuilding, so the rows can transition. */
+	#settle() {
+		this.#applyCollapse();
+		this.#refreshFold();
+		this.#paintPosition();
 	}
 
 	#foldable() {
@@ -117,19 +126,39 @@ export class TableOfContents {
 		const query = this.#search.value.trim().toLowerCase();
 
 		this.#list.innerHTML = this.#visible(query)
-			.map(({ topic, index, points }) => this.#topicRow(topic, index, query)
-				+ (this.#isOpen(index, query) ? points.map((point) => this.#pointRow(point)).join('') : ''))
+			.map(({ topic, index, points }) => `<li class="contents-group" data-group="${index}">`
+				+ this.#topicRow(topic, index)
+				+ (points.length
+					? `<div class="contents-points"><ul>${points.map((point) => this.#pointRow(point)).join('')}</ul></div>`
+					: '')
+				+ '</li>')
 			.join('');
 
 		Icons.paint(this.#list);
+		this.#applyCollapse();
+		this.#refreshFold();
 
+		this.#element.classList.toggle('is-empty', !this.#list.children.length);
+		this.#paintPosition();
+	}
+
+	/** Collapse is a class, not a rebuild, so the open and close can animate.
+	 *  A filter overrides it: a match inside a collapsed topic must still show. */
+	#applyCollapse() {
+		const filtering = Boolean(this.#search.value.trim());
+		this.#list.querySelectorAll('[data-group]').forEach((group) => {
+			const collapsed = !filtering && this.#collapsed.has(Number(group.dataset.group));
+			group.classList.toggle('is-collapsed', collapsed);
+			const caret = group.querySelector('.contents-caret[data-topic]');
+			if (caret) caret.setAttribute('aria-expanded', String(!collapsed));
+		});
+	}
+
+	#refreshFold() {
 		const collapsed = this.#allCollapsed();
 		this.#fold.disabled = !this.#foldable().length;
 		this.#fold.innerHTML = collapsed ? Icons.expandAll : Icons.collapseAll;
 		this.#fold.setAttribute('aria-label', collapsed ? 'Expand all topics' : 'Collapse all topics');
-
-		this.#element.classList.toggle('is-empty', !this.#list.children.length);
-		this.#paintPosition();
 	}
 
 	#allCollapsed() {
@@ -152,22 +181,16 @@ export class TableOfContents {
 			.filter(Boolean);
 	}
 
-	/** While a filter is active every match stays visible, collapsed or not. */
-	#isOpen(index, query) {
-		return Boolean(query) || !this.#collapsed.has(index);
-	}
-
-	#topicRow(topic, index, query) {
-		const open = this.#isOpen(index, query);
+	#topicRow(topic, index) {
 		const caret = topic.points.length
-			? `<button type="button" class="contents-caret" data-topic="${index}"`
-				+ ` aria-expanded="${open}" aria-label="${open ? 'Collapse' : 'Expand'} ${this.#escape(topic.title)}">`
-				+ `<span data-icon="caret"></span></button>`
+			? `<button type="button" class="contents-caret" data-topic="${index}" aria-expanded="true"`
+				+ ` aria-label="Collapse or expand ${this.#escape(topic.title)}">`
+				+ '<span data-icon="caret"></span></button>'
 			: '<span class="contents-caret"></span>';
 
-		return `<li class="contents-item is-topic">${caret}`
+		return `<div class="contents-item is-topic">${caret}`
 			+ `<button type="button" class="row contents-topic" data-anchor="${this.#anchor(topic.start)}">`
-			+ `<span class="row-label">${this.#escape(topic.title)}</span></button></li>`;
+			+ `<span class="row-label">${this.#escape(topic.title)}</span></button></div>`;
 	}
 
 	#pointRow(point) {
@@ -181,7 +204,8 @@ export class TableOfContents {
 	}
 
 	#paintPosition() {
-		const items = [...this.#list.querySelectorAll('.contents-item')];
+		const items = [...this.#list.querySelectorAll('.contents-item')]
+			.filter((item) => !item.closest('.is-collapsed'));
 		const limit = this.#thread.getBoundingClientRect().top + CURRENT_OFFSET;
 		let current = null;
 

@@ -17,6 +17,7 @@
 	--clay: #d97757;
 
 	--page: #ffffff;
+	--page-rgb: 255, 255, 255;
 	--sidebar: #fafafa;
 	--surface-0: var(--gray-20);
 	--surface-3: var(--gray-0);
@@ -68,6 +69,7 @@
 @media (prefers-color-scheme: dark) {
 	:root {
 		--page: #191919;
+		--page-rgb: 25, 25, 25;
 		--sidebar: #1f1f1f;
 		--surface-0: var(--gray-900);
 		--surface-3: #303030;
@@ -265,6 +267,26 @@ button {
 .contents-list {
 	margin: 0;
 	padding: 0;
+	list-style: none;
+}
+
+.contents-group { list-style: none; }
+
+/* Collapsing animates the row track from its natural height down to nothing,
+   which needs a single overflow-hidden child to clip against. */
+.contents-points {
+	display: grid;
+	grid-template-rows: 1fr;
+	transition: grid-template-rows 180ms ease;
+}
+
+.contents-group.is-collapsed .contents-points { grid-template-rows: 0fr; }
+
+.contents-points > ul {
+	margin: 0;
+	padding: 0;
+	min-height: 0;
+	overflow: hidden;
 	list-style: none;
 }
 
@@ -549,11 +571,46 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	scroll-margin-top: 1rem;
 }
 
+/* Each prompt pins to the top while its reply is read, the way VS Code keeps a
+   function signature in view, and is released by the next exchange. */
+.exchange {
+	position: relative;
+	scroll-margin-top: 0.25rem;
+}
+.exchange-top { height: 0; }
+
+/* Softens the edge where the reply slides under its pinned prompt. Only shown
+   once the prompt is actually pinned, or it would wash out the reply at rest. */
+.turn-user::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	height: 3rem;
+	background: linear-gradient(
+		rgb(var(--page-rgb)) 0%,
+		rgba(var(--page-rgb), 0.92) 28%,
+		rgba(var(--page-rgb), 0.68) 52%,
+		rgba(var(--page-rgb), 0.32) 76%,
+		rgba(var(--page-rgb), 0) 100%
+	);
+	opacity: 0;
+	transition: opacity 140ms ease;
+	pointer-events: none;
+}
+
+.exchange.is-pinned .turn-user::after { opacity: 1; }
+
 .turn-user {
 	display: flex;
+	position: sticky;
+	top: 0;
+	z-index: 1;
 	flex-direction: column;
 	align-items: flex-end;
-	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	background: var(--page);
 }
 
 .turn-user .bubble {
@@ -578,11 +635,9 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	transition: opacity 0.12s ease;
 }
 
-.turn-user .turn-actions { margin-left: 0; }
-
 .turn:hover .turn-actions,
 .turn-actions:focus-within,
-.turn:last-child .turn-actions { opacity: 1; }
+.exchange:last-child .turn:last-child .turn-actions { opacity: 1; }
 
 .turn-actions .icon-btn { color: var(--text-muted); }
 .turn-actions .icon-btn:hover { color: var(--text-primary); }
@@ -880,6 +935,8 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	.jump-to-latest { transition: none; }
 	.pane-track { transition: none; }
 	.contents-caret [data-icon] { transition: none; }
+	.contents-points { transition: none; }
+	.turn-user::after { transition: none; }
 }
 
 .model-menu button {
