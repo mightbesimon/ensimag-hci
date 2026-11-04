@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Claude</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="app" id="app">
+		<aside class="sidebar" id="sidebar">
+			<div class="titlebar">
+				<button type="button" class="icon-btn" id="collapse" data-icon="sidebar" title="Hide sidebar"></button>
+				<span class="wordmark">Claude</span>
+				<div class="mode-switch" role="radiogroup" aria-label="Mode">
+					<button type="button" role="radio" aria-checked="true" aria-label="Claude" data-icon="chat"></button>
+					<button type="button" role="radio" aria-checked="false" aria-label="Code" data-icon="code"></button>
+				</div>
+			</div>
+
+			<div class="sidebar-body">
+				<nav class="nav-scroll" aria-label="Navigation">
+					<button type="button" class="row" id="new-chat">
+						<span data-icon="compose"></span>
+						<span class="row-label">New</span>
+						<span class="row-keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>O</kbd></span>
+					</button>
+					<button type="button" class="row" id="search">
+						<span data-icon="search"></span>
+						<span class="row-label">Search</span>
+						<span class="row-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+					</button>
+
+					<div class="nav-gap"></div>
+
+					<button type="button" class="row"><span data-icon="projects"></span><span class="row-label">Projects</span></button>
+					<button type="button" class="row"><span data-icon="artifacts"></span><span class="row-label">Artifacts</span></button>
+					<button type="button" class="row"><span data-icon="scheduled"></span><span class="row-label">Scheduled</span></button>
+					<button type="button" class="row"><span data-icon="design"></span><span class="row-label">Design</span></button>
+					<button type="button" class="row"><span data-icon="customize"></span><span class="row-label">Customize</span></button>
+
+					<div class="nav-gap"></div>
+
+					<h2><button type="button" class="group-label" aria-expanded="true">
+						<span>Recents</span><span data-icon="caret"></span>
+					</button></h2>
+					<ul class="recents-list"></ul>
+				</nav>
+			</div>
+
+			<div class="sidebar-foot">
+				<button type="button" class="user-button">
+					<span class="avatar"></span>
+					<span class="user-text">
+						<span class="user-name"></span>
+						<span class="dot">·</span>
+						<span class="plan"></span>
+					</span>
+					<span data-icon="chevron"></span>
+				</button>
+				<button type="button" class="icon-btn" data-icon="downloads" title="Get apps and extensions"></button>
+			</div>
+		</aside>
+
+		<main class="main">
+			<header class="topbar">
+				<button type="button" class="icon-btn topbar-expand" id="expand" data-icon="sidebar" title="Show sidebar"></button>
+				<button type="button" class="topbar-title" id="chat-title"></button>
+				<div class="topbar-end">
+					<button type="button" class="pill-button"><span data-icon="share"></span><span>Share</span></button>
+				</div>
+			</header>
+
+			<div class="thread" id="thread">
+				<section class="welcome" id="welcome" hidden>
+					<h1 class="greeting">
+						<span class="greeting-mark" data-icon="mark"></span>
+						<span class="greeting-text">You're here!</span>
+					</h1>
+					<div class="composer-slot"></div>
+				</section>
+				<div class="messages" id="messages"></div>
+			</div>
+
+			<div class="dock" id="dock">
+				<button type="button" class="jump-to-latest" id="jump" aria-label="Scroll to bottom"
+					data-icon="scrollDown"></button>
+				<div class="composer-slot"></div>
+			</div>
+		</main>
+	</div>
+
+	<form class="composer" id="composer" autocomplete="off">
+		<div class="composer-box">
+			<textarea class="composer-input" rows="1" placeholder="How can I help you today?" aria-label="Write your prompt to Claude"></textarea>
+			<button type="submit" class="icon-btn composer-send" disabled aria-label="Send message" data-icon="send"></button>
+		</div>
+		<div class="composer-chin">
+			<button type="button" class="icon-btn" aria-label="Add files, connectors, and more" data-icon="plus"></button>
+			<button type="button" class="icon-btn" aria-label="Dictate" data-icon="mic"></button>
+			<p class="chin-centre"><a href="#">Claude is AI and can make mistakes.</a></p>
+			<div class="chin-end">
+				<div class="model-picker">
+					<button type="button" class="model-button" aria-haspopup="listbox">
+						<span class="model-label"></span><span class="model-tier">High</span>
+					</button>
+					<div class="model-menu" role="listbox" hidden></div>
+				</div>
+				<button type="button" class="pill-button">Manual</button>
+			</div>
+		</div>
+	</form>
+
+	<script type="module" src="js/main.js"></script>
+</body>
+</html>

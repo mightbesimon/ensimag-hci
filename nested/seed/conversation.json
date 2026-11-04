@@ -1,0 +1,124 @@
+{
+	"version": 2,
+	"user": {
+		"name": "Simon",
+		"plan": "Pro plan"
+	},
+	"conversations": [
+		{
+			"id": "horse-breeds",
+			"title": "Horse breeds",
+			"updated": "2026-11-04T14:20:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"at": "2026-11-04T14:12:00Z",
+					"content": "What are the main horse breed groups and what is each one actually for?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:12:30Z",
+					"content": "Breeds are usually sorted by build and temperament rather than by country, which is why the same country can produce very different horses.\n\n## Draught horses\n\nHeavy, calm, built for pulling rather than speed.\n\n- **Shire** — the tallest of them, often over 17 hands. Bred for hauling brewery drays.\n- **Percheron** — French, greyer and a little quicker than the Shire; still used in forestry.\n- **Belgian** — the most numerous draught horse in the world, broad and very placid.\n\n## Light riding horses\n\nBuilt for speed, endurance or precision.\n\n- **Thoroughbred** — the racing horse. Hot-blooded, thin-skinned, not forgiving of a novice rider.\n- **Arabian** — the oldest documented breed, famous for stamina over distance rather than flat speed.\n- **Quarter Horse** — the fastest over a quarter mile, which is where the name comes from. The most registered breed worldwide.\n\n## Ponies\n\nUnder 14.2 hands by definition, and usually much hardier than their size suggests.\n\n- **Shetland** — extremely strong for its height; was used in coal mines.\n- **Connemara** — Irish, a good jumper, often crossed with Thoroughbreds."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T14:18:00Z",
+					"content": "What does \"hands\" mean, and why measure that way?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:18:40Z",
+					"content": "A hand is **four inches**, measured from the ground to the withers — the ridge between the shoulder blades, not the top of the head. The withers are used because a horse raises and lowers its head constantly, so it is the only fixed high point.\n\nHeights are written with a full stop that is not a decimal: *15.3 hands* means fifteen hands and three inches, so 63 inches. There is no *15.4*, because four inches would be another whole hand.\n\nThe unit survives from measuring by the width of a human palm, and it stuck in English-speaking equestrian use even though most of continental Europe records horses in centimetres."
+				}
+			]
+		},
+		{
+			"id": "dog-breeds",
+			"title": "Dog breeds",
+			"updated": "2026-11-04T11:40:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"at": "2026-11-04T11:28:00Z",
+					"content": "How are dog breeds grouped, and what does each group tell you about the dog?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T11:28:35Z",
+					"content": "Kennel clubs group breeds by **the job the breed was developed to do**, which predicts temperament and exercise needs far better than size does.\n\n## Herding\n\nBred to move livestock. Intelligent, highly trainable, and they need a task or they invent one.\n\n- **Border Collie** — the benchmark for trainability; notoriously unsuited to a sedentary household.\n- **German Shepherd** — versatile enough that it moved into police and assistance work.\n\n## Gundogs\n\nBred to find or retrieve game. Soft-mouthed, people-oriented, biddable.\n\n- **Labrador Retriever** — the most popular breed in much of the world, partly because that biddability generalises well.\n- **English Springer Spaniel** — tireless, and happiest with a nose-led job.\n\n## Terriers\n\nBred to go to ground after vermin. Bold, independent, higher prey drive.\n\n- **Jack Russell** — small but emphatically not a lap dog.\n- **Staffordshire Bull Terrier** — strong, and generally very good with people.\n\n## Toy\n\nBred as companions rather than workers, though many are miniaturised versions of working types.\n\n- **Cavalier King Charles Spaniel** — gentle, and unfortunately prone to inherited heart disease.\n- **Dachshund** — technically a hound; the long back is a real orthopaedic liability."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T11:36:00Z",
+					"content": "Why do so many pedigree breeds have health problems?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T11:36:45Z",
+					"content": "Two mechanisms, and they compound each other.\n\n**A closed gene pool.** A pedigree breed is a population that stopped accepting outside stock, usually a century or so ago, and often started from very few founders. Recessive disease alleles that would normally stay rare become common, which is why particular conditions cluster in particular breeds rather than spreading evenly.\n\n**Selection for exaggerated form.** Where the breed standard rewards a shape, breeders select for more of it:\n\n- Flat faces in the Pug and French Bulldog produce **brachycephalic obstructive airway syndrome** — the skull shortened but the soft tissue did not.\n- The Dachshund's long back and short legs come from a form of dwarfism that also predisposes it to **intervertebral disc disease**.\n- Sloping hindquarters in some German Shepherd show lines are associated with **hip dysplasia**.\n\n> The practical upshot: ask a breeder for the health screening results for that breed's known conditions, not for the pedigree.\n\nCrossbreeds are not automatically healthier — a cross between two affected breeds can inherit both problems — but a wider gene pool does reduce the recessive-disease risk."
+				}
+			]
+		},
+		{
+			"id": "scripted-study",
+			"title": "Scripted study conversation",
+			"updated": "2026-11-03T10:12:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"at": "2026-11-03T10:10:00Z",
+					"content": "This conversation is a placeholder. Replace the contents of baseline/seed/conversation.json with the scripted multi-topic conversation from the experimental plan, and bump \"version\" so every browser re-seeds."
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-03T10:10:30Z",
+					"content": "Understood. The loader reads this file on first load and writes it into `localStorage`.\n\n## What to put here\n\n- **Topics** — several subjects discussed crisscross, so answers are not found in document order.\n- **Findable facts** — one retrievable detail per study question, buried mid-answer rather than in a heading.\n- **Length** — long enough that scrolling is the only option in the baseline condition.\n\nMarkdown is rendered, so headings, lists, bold, inline `code` and fenced blocks all work."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-03T10:11:30Z",
+					"content": "How do I re-seed after editing the file?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-03T10:12:00Z",
+					"content": "Increment the top-level `version` number. The loader compares it against the stored copy and replaces the stored conversations when they differ, so participants always start from the same state."
+				}
+			]
+		},
+		{
+			"id": "second-chat",
+			"title": "Second chat",
+			"updated": "2026-11-02T16:40:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"at": "2026-11-02T16:39:00Z",
+					"content": "A second conversation so the Recents list is not empty."
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-02T16:40:00Z",
+					"content": "Every entry in `conversations` becomes one row under **Recents** in the sidebar."
+				}
+			]
+		},
+		{
+			"id": "third-chat",
+			"title": "Third chat",
+			"updated": "2026-10-29T09:05:00Z",
+			"messages": [
+				{
+					"role": "user",
+					"at": "2026-10-29T09:04:00Z",
+					"content": "And a third."
+				},
+				{
+					"role": "assistant",
+					"at": "2026-10-29T09:05:00Z",
+					"content": "New chats started in the interface are appended to the same store and appear here too."
+				}
+			]
+		}
+	]
+}

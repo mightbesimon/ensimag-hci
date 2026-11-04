@@ -1,9 +1,12 @@
-# ensimag-hci — baseline interface
+# ensimag-hci — study interfaces
 
-Condition **A** of the user study: a reproduction of the claude.ai chat interface,
-backed by a stub Ollama server that streams filler text. This is the control the
-nested-navigation prototype is measured against, so it deliberately offers no way to
-search or outline *within* a conversation — finding an earlier idea means scrolling.
+Both interfaces for the user study, backed by one stub Ollama server that streams
+filler text.
+
+| Condition | Directory | URL | What it is |
+| --- | --- | --- | --- |
+| **A** — control | `baseline/` | <http://127.0.0.1:11434> | A reproduction of the claude.ai chat interface. Deliberately offers no way to search or outline *within* a conversation, so finding an earlier idea means scrolling. **Finished — do not change it.** |
+| **B** — prototype | `nested/` | <http://127.0.0.1:11434/nested/> | The hierarchical-navigation prototype. Currently an exact copy of the baseline, to be built on. |
 
 ## Run it
 
@@ -11,23 +14,31 @@ search or outline *within* a conversation — finding an earlier idea means scro
 python3 serve.py
 ```
 
-Then open <http://127.0.0.1:11434>. Nothing to install: Python 3 standard library and
+One server serves both conditions. Nothing to install: Python 3 standard library and
 plain HTML, CSS and ES modules, no build step and no package manager.
+
+`nested/` is a **copy**, not a shared library: the two conditions must be free to
+diverge, so a fix made in one does not reach the other. Port anything worth keeping
+across by hand. The one difference already present is the `localStorage` key
+(`hci-baseline` vs `hci-nested`), so the two conditions never share browser state.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `serve.py` | Entry point. Serves `baseline/` and the stub API on one port. |
-| `server/handler.py` | HTTP routing, static files, chunked NDJSON streaming. |
+| `serve.py` | Entry point. Serves both interfaces and the stub API on one port. |
+| `server/handler.py` | HTTP routing, static mounts, chunked NDJSON streaming. |
 | `server/ollama.py` | Ollama payload shapes: `/api/version`, `/api/tags`, `/api/chat`. |
 | `server/gibberish.py` | The filler-prose generator. |
 | `baseline/index.html` | Interface markup. |
 | `baseline/style.css` | Palette and layout, light and dark. |
 | `baseline/js/` | One class per file: store, markdown, composer, sidebar, chat view. |
 | `baseline/seed/conversation.json` | The conversation participants start from. |
+| `nested/` | Condition B, same file layout as `baseline/`. |
 
-`prototype/` is a separate, unrelated piece of work and is untouched by any of this.
+Only `baseline/` and `nested/` are reachable over HTTP; the server code, `.git` and
+the rest of the repository are not served. `prototype/` is a separate, unrelated piece
+of work and is untouched by any of this.
 
 ## The stub backend
 
@@ -53,13 +64,14 @@ the string `Ollama is running`, and only the chat surface is implemented (no
 
 ## The seed conversation
 
-`baseline/seed/conversation.json` currently holds **placeholder content**. Replace the
+Each condition has its own `seed/conversation.json`, currently holding the same
+**placeholder content**. Replace the
 `conversations` array with the scripted multi-topic conversation from the experimental
 plan, then **increment the top-level `version`**: the store compares it against each
 browser's saved copy and re-seeds when they differ, so every participant starts from
 identical state.
 
-Conversation state lives in `localStorage` under `hci-baseline`. To reset a browser by
+Conversation state lives in `localStorage` under `hci-baseline` and `hci-nested`. To reset a browser by
 hand between participants, clear site data for `localhost:11434`.
 
 ## Fidelity

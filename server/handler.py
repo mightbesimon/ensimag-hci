@@ -1,4 +1,4 @@
-"""HTTP routing: the baseline UI as static files, plus the Ollama stub API."""
+"""HTTP routing: each interface as static files, plus the Ollama stub API."""
 import json
 import os
 import time
@@ -6,7 +6,14 @@ from http.server import SimpleHTTPRequestHandler
 
 from .ollama import OllamaStub
 
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'baseline')
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# One mount per study condition. Only these directories are reachable over HTTP;
+# the rest of the repository (server code, .git) stays unexposed.
+BASELINE_ROOT = os.path.join(ROOT, 'baseline')
+MOUNTS = (
+	('/nested', os.path.join(ROOT, 'nested')),
+)
 
 # Pause before the first token, then between tokens, so the interface behaves
 # like a real backend rather than pasting a finished answer.
@@ -20,7 +27,16 @@ class RequestHandler(SimpleHTTPRequestHandler):
 	stub = OllamaStub()
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, directory=STATIC_ROOT, **kwargs)
+		super().__init__(*args, directory=BASELINE_ROOT, **kwargs)
+
+	def translate_path(self, path):
+		for prefix, root in MOUNTS:
+			if path != prefix and not path.startswith(prefix + '/'):
+				continue
+			self.directory = root
+			return super().translate_path(path[len(prefix):] or '/')
+		self.directory = BASELINE_ROOT
+		return super().translate_path(path)
 
 	def log_message(self, template, *args):
 		if self.path.startswith('/api/'):
