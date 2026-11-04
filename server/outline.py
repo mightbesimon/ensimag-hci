@@ -10,10 +10,13 @@ fakes it two ways:
 
 - the seeded study conversations have their outline written out below, so the
   scripted material is stable and sensibly labelled;
-- anything typed live opens a topic, or a key point inside the current one, by
-  chance. The roll is seeded from the message text, so the same conversation
-  always produces the same outline. A study needs that: an outline that
-  reshuffled between participants would not be the same stimulus twice.
+- anything typed live is grouped by chance, in two stages: a message has a
+  50/50 shot at opening a key point, and a key point is then promoted to a full
+  topic three times in ten. Points therefore outnumber topics about two to one,
+  which is the shape a real conversation takes. Both rolls are seeded from the
+  message text, so the same conversation always produces the same outline. A
+  study needs that: an outline that reshuffled between participants would not be
+  the same stimulus twice.
 """
 import copy
 import hashlib
@@ -34,10 +37,11 @@ DANGLING = frozenset(
 	'a an the of from in on for to with and or that this my your its as at by'.split()
 )
 
-# Topics are rare, key points are common; together they give a handful of
-# phases, each with a few moments inside it.
-NEW_TOPIC_CHANCE = 0.22
+# Every message gets a shot at opening a key point; a point that opens is then
+# sometimes promoted to a whole topic. Chaining them this way keeps points more
+# common than topics, so a conversation gets a few phases with moments inside.
 NEW_POINT_CHANCE = 0.5
+TOPIC_FROM_POINT_CHANCE = 0.3
 
 
 class OutlineBuilder:
@@ -111,11 +115,16 @@ class OutlineBuilder:
 				continue
 
 			content = message.get('content', '')
-			if not topics or self._rolls(content, 'topic', NEW_TOPIC_CHANCE):
+			if not topics:
 				topics.append({'title': self._title(content), 'start': index, 'points': []})
 				continue
-			if self._rolls(content, 'point', NEW_POINT_CHANCE):
-				topics[-1]['points'].append({'title': self._title(content), 'start': index})
+
+			if not self._rolls(content, 'point', NEW_POINT_CHANCE):
+				continue
+			if self._rolls(content, 'topic', TOPIC_FROM_POINT_CHANCE):
+				topics.append({'title': self._title(content), 'start': index, 'points': []})
+				continue
+			topics[-1]['points'].append({'title': self._title(content), 'start': index})
 
 		return {'topics': topics}
 

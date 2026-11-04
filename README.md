@@ -54,8 +54,10 @@ the Search field filters topics and points rather than conversations.
 The outline comes from `POST /api/outline`, so the interface only ever sees
 `{topics: [{title, start, points: [{title, start}]}]}`. A real deployment would
 have that endpoint ask the model; the stub writes the seeded conversations'
-outlines by hand and groups anything typed live by chance — seeded from the
-message text, so the same conversation always yields the same outline.
+outlines by hand and groups anything typed live by chance: a message has a 50%
+shot at opening a key point, and a key point is promoted to a topic 30% of the
+time, so points outnumber topics about two to one. Both rolls are seeded from
+the message text, so the same conversation always yields the same outline.
 
 ## The stub backend
 
