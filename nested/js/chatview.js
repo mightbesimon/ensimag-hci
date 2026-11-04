@@ -28,7 +28,7 @@ export class ChatView {
 	#jump;
 	#onUpdate;
 	#onScroll;
-	#pinned;
+	#pinFrame = false;
 
 	constructor(elements, store, client, renderer, composer, listeners) {
 		this.#thread = elements.thread;
@@ -56,7 +56,6 @@ export class ChatView {
 		if (!conversation) {
 			this.#welcome.querySelector('.composer-slot').append(this.#composer.element);
 			this.#messages.innerHTML = '';
-			this.#pinned?.disconnect();
 			this.#composer.focus();
 			this.#refreshJump();
 			this.#onUpdate(null);
@@ -65,12 +64,12 @@ export class ChatView {
 
 		this.#dock.querySelector('.composer-slot').append(this.#composer.element);
 		this.#messages.innerHTML = this.#exchanges(conversation.messages)
-			.map((turns) => '<section class="exchange"><div class="exchange-top" aria-hidden="true"></div>'
+			.map((turns) => '<section class="exchange">'
 				+ turns.map(({ message, index }) => this.#turn(message, index, conversation)).join('')
 				+ '</section>')
 			.join('');
 		Icons.paint(this.#messages);
-		this.#watchPins();
+		this.#refreshPins();
 		this.#composer.focus();
 		this.#refreshJump();
 		this.#onUpdate(conversation);
@@ -103,6 +102,7 @@ export class ChatView {
 
 		this.#thread.addEventListener('scroll', () => {
 			this.#refreshJump();
+			this.#schedulePins();
 			this.#onScroll();
 		}, { passive: true });
 		this.#jump.addEventListener('click', () => this.#scrollToBottom(true));
@@ -155,19 +155,27 @@ export class ChatView {
 		this.render();
 	}
 
-	/** Marks an exchange whose prompt has pinned, so the reply can be faded as it
-	 *  slides underneath rather than being cut off square. */
-	#watchPins() {
-		this.#pinned?.disconnect();
-		this.#pinned = new IntersectionObserver(
-			(entries) => entries.forEach((entry) => {
-				const above = !entry.isIntersecting && entry.boundingClientRect.top < 0;
-				entry.target.parentElement.classList.toggle('is-pinned', above);
-			}),
-			{ root: this.#thread },
-		);
-		this.#messages.querySelectorAll('.exchange-top')
-			.forEach((marker) => this.#pinned.observe(marker));
+	/** Marks the exchange whose prompt is currently pinned, so the reply can be
+	 *  faded as it slides underneath.
+	 *
+	 *  Measured from the scroll position rather than watched with an observer:
+	 *  an observer only reports threshold crossings, and scrolling quickly back
+	 *  and forth could leave the flag stale. This cannot drift. */
+	#refreshPins() {
+		const top = this.#thread.getBoundingClientRect().top;
+		this.#messages.querySelectorAll('.exchange').forEach((exchange) => {
+			const box = exchange.getBoundingClientRect();
+			exchange.classList.toggle('is-pinned', box.top < top && box.bottom > top);
+		});
+	}
+
+	#schedulePins() {
+		if (this.#pinFrame) return;
+		this.#pinFrame = true;
+		requestAnimationFrame(() => {
+			this.#pinFrame = false;
+			this.#refreshPins();
+		});
 	}
 
 	/** One prompt and the replies beneath it. */

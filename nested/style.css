@@ -577,7 +577,6 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	position: relative;
 	scroll-margin-top: 0.25rem;
 }
-.exchange-top { height: 0; }
 
 /* Softens the edge where the reply slides under its pinned prompt. Only shown
    once the prompt is actually pinned, or it would wash out the reply at rest. */
@@ -587,12 +586,14 @@ button.contents-caret:hover { color: var(--text-primary); background: var(--hove
 	top: 100%;
 	left: 0;
 	right: 0;
-	height: 3rem;
+	/* Roughly three lines of prose, so the text dissolves well before the edge. */
+	height: 5rem;
 	background: linear-gradient(
 		rgb(var(--page-rgb)) 0%,
-		rgba(var(--page-rgb), 0.92) 28%,
-		rgba(var(--page-rgb), 0.68) 52%,
-		rgba(var(--page-rgb), 0.32) 76%,
+		rgba(var(--page-rgb), 0.95) 20%,
+		rgba(var(--page-rgb), 0.78) 40%,
+		rgba(var(--page-rgb), 0.5) 62%,
+		rgba(var(--page-rgb), 0.22) 82%,
 		rgba(var(--page-rgb), 0) 100%
 	);
 	opacity: 0;
