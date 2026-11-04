@@ -1,5 +1,5 @@
 {
-	"version": 2,
+	"version": 3,
 	"user": {
 		"name": "Simon",
 		"plan": "Pro plan"
@@ -8,54 +8,254 @@
 		{
 			"id": "horse-breeds",
 			"title": "Horse breeds",
-			"updated": "2026-11-04T14:20:00Z",
+			"updated": "2026-11-04T14:14:00Z",
 			"messages": [
 				{
 					"role": "user",
-					"at": "2026-11-04T14:12:00Z",
-					"content": "What are the main horse breed groups and what is each one actually for?"
+					"at": "2026-11-04T13:30:00Z",
+					"content": "What are the main horse breed types, and what was each one bred to do?"
 				},
 				{
 					"role": "assistant",
-					"at": "2026-11-04T14:12:30Z",
-					"content": "Breeds are usually sorted by build and temperament rather than by country, which is why the same country can produce very different horses.\n\n## Draught horses\n\nHeavy, calm, built for pulling rather than speed.\n\n- **Shire** — the tallest of them, often over 17 hands. Bred for hauling brewery drays.\n- **Percheron** — French, greyer and a little quicker than the Shire; still used in forestry.\n- **Belgian** — the most numerous draught horse in the world, broad and very placid.\n\n## Light riding horses\n\nBuilt for speed, endurance or precision.\n\n- **Thoroughbred** — the racing horse. Hot-blooded, thin-skinned, not forgiving of a novice rider.\n- **Arabian** — the oldest documented breed, famous for stamina over distance rather than flat speed.\n- **Quarter Horse** — the fastest over a quarter mile, which is where the name comes from. The most registered breed worldwide.\n\n## Ponies\n\nUnder 14.2 hands by definition, and usually much hardier than their size suggests.\n\n- **Shetland** — extremely strong for its height; was used in coal mines.\n- **Connemara** — Irish, a good jumper, often crossed with Thoroughbreds."
+					"at": "2026-11-04T13:30:40Z",
+					"content": "Breeds are sorted by build and purpose rather than by country, which is why one country produces very different horses.\n\n## Draught\n\nHeavy, calm, built for pulling. The **Shire** is the tallest, often over 17 hands, bred for brewery drays. The **Percheron** is French, greyer and quicker off the mark, still used in forestry. The **Belgian** is the most numerous draught horse in the world.\n\n## Light riding horses\n\nBuilt for speed or endurance. The **Thoroughbred** is the racing horse. The **Arabian** is the oldest documented breed, famous for stamina over distance. The **Quarter Horse** is the fastest over a quarter mile, which is where the name comes from.\n\n## Ponies\n\nUnder 14.2 hands by definition, and far hardier than their size suggests."
 				},
 				{
 					"role": "user",
-					"at": "2026-11-04T14:18:00Z",
-					"content": "What does \"hands\" mean, and why measure that way?"
+					"at": "2026-11-04T13:33:40Z",
+					"content": "Which breeds are actually fastest?"
 				},
 				{
 					"role": "assistant",
-					"at": "2026-11-04T14:18:40Z",
-					"content": "A hand is **four inches**, measured from the ground to the withers — the ridge between the shoulder blades, not the top of the head. The withers are used because a horse raises and lowers its head constantly, so it is the only fixed high point.\n\nHeights are written with a full stop that is not a decimal: *15.3 hands* means fifteen hands and three inches, so 63 inches. There is no *15.4*, because four inches would be another whole hand.\n\nThe unit survives from measuring by the width of a human palm, and it stuck in English-speaking equestrian use even though most of continental Europe records horses in centimetres."
+					"at": "2026-11-04T13:34:20Z",
+					"content": "It depends on the distance, which is the whole point of the split.\n\n- **Over a quarter mile**, the Quarter Horse. It accelerates harder than anything else and has been clocked around 55 mph.\n- **Over a mile or more**, the Thoroughbred, which sustains about 40 mph far longer. Every flat race you have watched is this breed.\n- **Over fifty or a hundred miles**, the Arabian, and it is not close. Endurance racing at that distance is overwhelmingly Arabians and part-Arabians.\n\nThe physiology differs: the Quarter Horse carries huge fast-twitch muscle over the hindquarters, while the Arabian has proportionally large lungs and unusually efficient heat dissipation."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:37:20Z",
+					"content": "What does it mean when people say a horse is hot-blooded?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:38:00Z",
+					"content": "It is temperament and breeding type, nothing to do with actual blood temperature.\n\n- **Hot-blooded** — Thoroughbreds and Arabians. Reactive, sensitive, quick to respond and quick to worry. Thin-skinned in both senses. Bred for speed.\n- **Cold-blooded** — the draught breeds. Phlegmatic, slow to react, tolerant of noise and nonsense. Bred for strength and steadiness.\n- **Warmblood** — the deliberate middle, from crossing the two.\n\nThe labels are a rough guide to how much a horse will react, which matters enormously when you are matching a horse to a rider."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:41:00Z",
+					"content": "So what is a warmblood exactly?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:41:40Z",
+					"content": "Not a breed in the sense a Thoroughbred is one. A warmblood is a horse registered with a **studbook** — Hanoverian, Holsteiner, KWPN, Selle Français — and those studbooks are open.\n\nThat is the important difference. Rather than a closed population bred only within itself, a warmblood studbook judges each horse on its own merits and will admit outside stock, usually Thoroughbred, when it improves the result. Breeding stock is inspected and graded; a stallion that does not perform does not get approved.\n\nThe practical consequence is that warmbloods are bred for *performance* in dressage and jumping rather than for appearance, and the gene pool stays wider than a closed breed’s."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:44:40Z",
+					"content": "How is a horse’s height measured?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:45:20Z",
+					"content": "In **hands**, where one hand is four inches, measured from the ground to the withers.\n\nThe notation trips people up because the decimal point is not a decimal. *15.3 hands* means fifteen hands and three inches, so 63 inches. There is no 15.4, because four more inches would be another whole hand.\n\nThe unit survives from measuring with the width of a palm, and it has stuck in English-speaking equestrian use even though most of continental Europe records horses in centimetres. The 14.2 hands pony threshold is the one that matters competitively, because it determines which classes a horse can enter."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:48:20Z",
+					"content": "Why the withers and not the head?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:49:00Z",
+					"content": "Because the head moves and the withers do not.\n\nA horse raises and lowers its head constantly — grazing, looking up, reacting. Measuring to the poll would give a different answer every time. The withers are the ridge where the neck meets the back, over the spinous processes of the thoracic vertebrae, and they are the highest **fixed** point on the skeleton.\n\nFor the measurement to mean anything the horse must be standing square on hard level ground, which is why official measurement for competition is done by a vet on a measuring pad rather than on the yard."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:52:00Z",
+					"content": "What is conformation and why does everyone go on about it?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:52:40Z",
+					"content": "Conformation is how the horse is physically put together — the proportions, the angles of the joints, how the limbs align. People go on about it because it predicts **soundness**, which is to say how long the horse will stay usable.\n\nA horse is a large mass on thin legs, and poor angles concentrate force where the tissue cannot take it. Over thousands of repetitions that becomes arthritis, tendon injury or navicular changes.\n\nIt is not about beauty, and a horse can be unattractive and perfectly functional. What matters is whether the structure will tolerate the work you intend to do."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:55:40Z",
+					"content": "Which conformation faults actually matter?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T13:56:20Z",
+					"content": "Some are cosmetic. These are the ones with real consequences.\n\n- **Back at the knee** — the knee bows backwards when viewed from the side. Strongly associated with tendon and carpal injury, and widely considered the most serious fault in a working horse.\n- **Long, sloping pasterns** — act as over-soft springs and overload the flexor tendons.\n- **Upright pasterns** — the opposite problem. Too little shock absorption, so concussion travels into the joints.\n- **Sickle hocks** — excessively angled hind limb, linked to curb and hock arthritis.\n\nJudge the faults against the job. A slight deviation that would end a racehorse may never trouble a hacking horse."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T13:59:20Z",
+					"content": "I am a nervous rider. What temperament should I look for?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:00:00Z",
+					"content": "Temperament and experience, and treat breed as a weak signal compared with the individual in front of you.\n\nWhat you want is a **schoolmaster**: a horse that has done the job for years, has seen traffic and plastic bags and dogs, and whose reaction to a rider’s mistake is to ignore it rather than to escalate. These horses are worth a great deal and are rarely advertised as exciting.\n\nRide it more than once, on different days, ideally including a bad weather day. Hack it out alone and in company. A horse that is calm in an indoor school and unmanageable on a road is only half tested."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T14:03:00Z",
+					"content": "Does age matter more than breed?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:03:40Z",
+					"content": "For a nervous or novice rider, yes — considerably more.\n\nThe usual advice is that green and green do not mix. A young horse is still forming its responses, and it will learn as much from an uncertain rider as from a confident one, mostly the wrong things.\n\nThe sweet spot is roughly **ten to sixteen years old**: experienced enough to be settled, with working years left. Horses commonly stay in light work into their twenties, so a fifteen-year-old is not the compromise it sounds like.\n\nBuy the mileage. It is the single factor most likely to determine whether you enjoy the first year."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T14:06:40Z",
+					"content": "What does keeping a horse actually cost?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:07:20Z",
+					"content": "The purchase price is usually the smallest number involved.\n\n## Recurring\n\n- **Livery** — by far the largest. Full livery, where the yard does everything, costs many times what a field with a shelter does.\n- **Farrier** — every six to eight weeks, without exception, shod or not.\n- **Vaccination and dentistry** — annual flu and tetanus, teeth rasped once or twice a year.\n- **Worming**, feed, bedding, insurance, tack and rug replacement.\n\nThe horse needs the farrier whether or not you ride it, whether or not it is sound, and whether or not you are away. That inflexibility is what catches people out."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T14:10:20Z",
+					"content": "What is the single biggest ongoing cost people underestimate?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T14:11:00Z",
+					"content": "Livery, if you are counting what leaves the account monthly. But the one that *surprises* people is **veterinary**.\n\nRoutine care is predictable. What is not predictable is that colic surgery runs into several thousand pounds, decided in a few hours, with no guarantee of a working horse afterwards. The same is true of a serious tendon injury, which is months of box rest and rehabilitation.\n\nInsurance helps but is narrower than people assume: policies routinely exclude pre-existing conditions, cap the vet fee limit per condition per year, and stop covering a condition entirely after the first year.\n\nThe honest planning assumption is that you need either good cover or several thousand accessible at short notice."
 				}
 			]
 		},
 		{
 			"id": "dog-breeds",
 			"title": "Dog breeds",
-			"updated": "2026-11-04T11:40:00Z",
+			"updated": "2026-11-04T10:49:00Z",
 			"messages": [
 				{
 					"role": "user",
-					"at": "2026-11-04T11:28:00Z",
-					"content": "How are dog breeds grouped, and what does each group tell you about the dog?"
+					"at": "2026-11-04T10:05:00Z",
+					"content": "I am thinking about getting a dog. How are breeds grouped, and does the group actually tell you anything useful?"
 				},
 				{
 					"role": "assistant",
-					"at": "2026-11-04T11:28:35Z",
-					"content": "Kennel clubs group breeds by **the job the breed was developed to do**, which predicts temperament and exercise needs far better than size does.\n\n## Herding\n\nBred to move livestock. Intelligent, highly trainable, and they need a task or they invent one.\n\n- **Border Collie** — the benchmark for trainability; notoriously unsuited to a sedentary household.\n- **German Shepherd** — versatile enough that it moved into police and assistance work.\n\n## Gundogs\n\nBred to find or retrieve game. Soft-mouthed, people-oriented, biddable.\n\n- **Labrador Retriever** — the most popular breed in much of the world, partly because that biddability generalises well.\n- **English Springer Spaniel** — tireless, and happiest with a nose-led job.\n\n## Terriers\n\nBred to go to ground after vermin. Bold, independent, higher prey drive.\n\n- **Jack Russell** — small but emphatically not a lap dog.\n- **Staffordshire Bull Terrier** — strong, and generally very good with people.\n\n## Toy\n\nBred as companions rather than workers, though many are miniaturised versions of working types.\n\n- **Cavalier King Charles Spaniel** — gentle, and unfortunately prone to inherited heart disease.\n- **Dachshund** — technically a hound; the long back is a real orthopaedic liability."
+					"at": "2026-11-04T10:05:40Z",
+					"content": "Kennel clubs group breeds by **the job the breed was developed to do**, and that predicts temperament far better than size does.\n\n- **Herding** — Border Collie, German Shepherd. Bred to move livestock: busy, highly trainable, prone to inventing work if you give them none.\n- **Gundogs** — Labrador, Springer Spaniel. Bred to find or retrieve: soft-mouthed, people-oriented, biddable.\n- **Terriers** — Jack Russell, Staffordshire Bull Terrier. Bred to go to ground after vermin: bold, independent, high prey drive.\n- **Hounds** — Beagle, Greyhound. Split between scent hounds, which follow a nose anywhere, and sight hounds, which chase what moves.\n- **Toy** — Cavalier, Pug. Bred as companions, often miniaturised versions of working types.\n\nThe group is a starting point, not a guarantee. Individual variation within a breed is wide."
 				},
 				{
 					"role": "user",
-					"at": "2026-11-04T11:36:00Z",
+					"at": "2026-11-04T10:08:40Z",
+					"content": "Which groups are the highest energy?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:09:20Z",
+					"content": "Herding and gundogs, by a clear margin. Both were bred to work a full day alongside a person, and a Border Collie or a Springer that gets a twenty-minute walk will find its own entertainment — usually something you would rather it did not.\n\nTerriers are intense but in shorter bursts; they tire more readily than their reputation suggests. Sight hounds surprise people: a Greyhound sprints hard for two minutes and sleeps for eighteen hours.\n\nThe more useful question is **mental** load. A Collie needs a job more than it needs miles. Scent work, training games and puzzle feeding tire that kind of dog faster than walking does."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:12:20Z",
+					"content": "I live in a flat with no garden. Does that rule out whole groups?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:13:00Z",
+					"content": "Less than you would think. Space inside matters much less than exercise, noise and tolerance of being left.\n\n## What actually matters in a flat\n\n- **Noise** — terriers and many toy breeds are vocal, and that is what causes trouble with neighbours.\n- **Stairs** — hard on long-backed breeds like Dachshunds, and on large breeds while they are still growing.\n- **Toileting** — no garden means every toilet trip is a planned trip out, which is a real constraint with a puppy.\n\nGreyhounds are the classic flat dog: quiet, clean, and content to sleep most of the day. Collies and Springers are the hard ones, not because of the square footage but because of what they need from your day."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:16:00Z",
+					"content": "I work four days a week in an office. Is that fair on a dog?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:16:40Z",
+					"content": "It depends on the arrangement, not the number of days. The usual guidance is that an adult dog should not be routinely alone for more than about four hours, and a puppy far less than that.\n\nFour office days works if you break the day up — a midday walker, daycare a couple of days, or a neighbour. It does not work if the dog is alone from eight until six and you are relying on it to cope.\n\nTwo things make it easier: **take an adult rather than a puppy**, since house training and separation training are already done, and choose a breed that tolerates being left. Greyhounds and many of the toy breeds do; Collies and Vizslas frequently do not."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:19:40Z",
 					"content": "Why do so many pedigree breeds have health problems?"
 				},
 				{
 					"role": "assistant",
-					"at": "2026-11-04T11:36:45Z",
-					"content": "Two mechanisms, and they compound each other.\n\n**A closed gene pool.** A pedigree breed is a population that stopped accepting outside stock, usually a century or so ago, and often started from very few founders. Recessive disease alleles that would normally stay rare become common, which is why particular conditions cluster in particular breeds rather than spreading evenly.\n\n**Selection for exaggerated form.** Where the breed standard rewards a shape, breeders select for more of it:\n\n- Flat faces in the Pug and French Bulldog produce **brachycephalic obstructive airway syndrome** — the skull shortened but the soft tissue did not.\n- The Dachshund's long back and short legs come from a form of dwarfism that also predisposes it to **intervertebral disc disease**.\n- Sloping hindquarters in some German Shepherd show lines are associated with **hip dysplasia**.\n\n> The practical upshot: ask a breeder for the health screening results for that breed's known conditions, not for the pedigree.\n\nCrossbreeds are not automatically healthier — a cross between two affected breeds can inherit both problems — but a wider gene pool does reduce the recessive-disease risk."
+					"at": "2026-11-04T10:20:20Z",
+					"content": "Two mechanisms, and they compound each other.\n\n**A closed gene pool.** A pedigree breed is a population that stopped accepting outside stock, usually a century or so ago, and often started from very few founders. Recessive disease alleles that would normally stay rare become common, which is why particular conditions cluster in particular breeds rather than spreading evenly.\n\n**Selection for exaggerated form.** Where the breed standard rewards a shape, breeders select for more of it. Flat faces in the Pug and French Bulldog produce breathing disease; the Dachshund’s long back comes from a dwarfism that also predisposes it to disc disease; sloping hindquarters in some German Shepherd show lines are associated with hip dysplasia."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:23:20Z",
+					"content": "Which conditions should I actually ask about?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:24:00Z",
+					"content": "It depends entirely on the breed, which is the point — ask what is screened for in *that* breed, and ask to see the results rather than a reassurance.\n\n- **Hip and elbow scores** — larger breeds. Lower is better; compare against the breed median, not zero.\n- **Eye testing** — annual certificates in breeds prone to progressive retinal atrophy.\n- **DNA tests** — now available for many single-gene conditions. A \"carrier\" result is not disqualifying if the mate is clear.\n- **Heart testing** — essential in Cavaliers, where mitral valve disease is close to universal with age.\n- **Breathing assessment** — the BOAS grading scheme for flat-faced breeds.\n\nA breeder who has done this work will produce the paperwork without being pushed."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:27:00Z",
+					"content": "Are crossbreeds healthier?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:27:40Z",
+					"content": "Not automatically, and the popular claim oversells it.\n\nA wider gene pool genuinely does reduce the risk of recessive disease, because two copies of the same rare bad allele are less likely to meet. That part is real.\n\nBut a cross between two affected breeds can inherit the problems of both. A Cavalier crossed with a Poodle can get the heart disease and the eye conditions. And crossing does nothing about **conformation**: a flat-faced cross still has a flat face, and still cannot breathe properly.\n\n> The health of an individual dog depends on what its parents were screened for, not on whether the pairing had a name."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:30:40Z",
+					"content": "What should a good breeder be able to show me?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:31:20Z",
+					"content": "Treat it as an interview in both directions. A good breeder will ask you as many questions as you ask them.\n\n## Ask to see\n\n- The **mother with the litter**, in the home where they were raised. If you cannot, walk away.\n- **Screening certificates** for both parents, in their names, not a generic claim that the line is healthy.\n- Registration papers, and what endorsements are on them.\n\n## Warning signs\n\n- Several litters of different breeds available at once.\n- Meeting somewhere other than the home.\n- Puppies ready to leave before eight weeks.\n- No questions about your circumstances at all."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:34:20Z",
+					"content": "When should training and socialisation start?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:35:00Z",
+					"content": "Immediately, and the socialisation part is genuinely time-critical.\n\nThere is a **sensitive period** roughly between three and fourteen weeks when a puppy forms its baseline sense of what is normal. Experiences in that window shape adult behaviour far more than anything later, and what is missed is much harder to fix afterwards.\n\nThe common mistake is reading socialisation as \"meet lots of dogs\". It is mostly **habituation** to the world: traffic, hoovers, bicycles, hats, umbrellas, floor surfaces, being handled, being alone. Meeting other dogs is a small part, and bad meetings do more harm than no meetings."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:38:00Z",
+					"content": "How much training does a puppy actually need daily?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:38:40Z",
+					"content": "Far less time than people expect, far more often.\n\nA puppy cannot concentrate for long, so **five minutes, several times a day** beats one long session. Three or four short bouts is plenty, ideally before meals when the dog is keen.\n\nKeep it reward-based. The evidence on this is fairly settled: aversive methods are no more effective and are associated with more anxiety and more aggression later.\n\nMost of the real training is not sessions at all. It is what you reinforce accidentally during the day — whether jumping up gets attention, whether the lead goes tight and the walk continues anyway."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:41:40Z",
+					"content": "How much grooming do different coats need?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:42:20Z",
+					"content": "Coat type drives this, and it is worth deciding before you choose the dog rather than after.\n\n- **Smooth** — Labrador, Staffie. A weekly brush. They shed, but it is manageable.\n- **Double** — Husky, German Shepherd. Dense undercoat that blows out twice a year dramatically. Brushing several times a week, and never clip them.\n- **Wire** — many terriers. Traditionally hand-stripped a few times a year; clipping softens the coat permanently.\n- **Curly or wavy** — Poodle, and most Poodle crosses. These need **professional clipping every six to eight weeks for life**, plus brushing to the skin between. Neglected, they mat to the point of needing to be shaved off.\n\nThe curly coats are the ones people underestimate, both in cost and in commitment."
+				},
+				{
+					"role": "user",
+					"at": "2026-11-04T10:45:20Z",
+					"content": "Which breeds shed least, and is that the same as hypoallergenic?"
+				},
+				{
+					"role": "assistant",
+					"at": "2026-11-04T10:46:00Z",
+					"content": "No, and the conflation causes a lot of disappointment.\n\nLow-shedding breeds are real: Poodles, Bichons, many terriers and most Poodle crosses drop far less hair around the house, because the coat grows continuously rather than cycling out.\n\n**Hypoallergenic is a marketing term with no basis.** The usual allergen is a protein called Can f 1, which is in dander and saliva, not in hair as such. Studies comparing allergen levels in homes with supposedly hypoallergenic breeds against other breeds have not found a meaningful difference.\n\nIf someone in the household is allergic, test the reaction to the actual individual dog over several visits before committing."
 				}
 			]
 		},

@@ -19,7 +19,8 @@
 			</div>
 
 			<div class="sidebar-body">
-				<nav class="nav-scroll" aria-label="Navigation">
+				<div class="pane-track">
+				<nav class="pane pane-chats nav-scroll" aria-label="Navigation">
 					<button type="button" class="row" id="new-chat">
 						<span data-icon="compose"></span>
 						<span class="row-label">New</span>
@@ -46,6 +47,24 @@
 					</button></h2>
 					<ul class="recents-list"></ul>
 				</nav>
+
+				<nav class="pane pane-contents" aria-label="Table of contents">
+					<div class="contents-head">
+						<button type="button" class="icon-btn contents-back" data-icon="back"
+							aria-label="Back to chats"></button>
+						<span class="contents-title"></span>
+						<button type="button" class="icon-btn contents-fold"
+							aria-label="Collapse all topics" data-icon="collapseAll"></button>
+					</div>
+					<label class="contents-search">
+						<span data-icon="search"></span>
+						<input type="search" class="contents-search-input" placeholder="Search topics"
+							aria-label="Search topics in this conversation">
+					</label>
+					<ol class="contents-list"></ol>
+					<p class="contents-empty">No matching topics.</p>
+				</nav>
+				</div>
 			</div>
 
 			<div class="sidebar-foot">

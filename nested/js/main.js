@@ -4,7 +4,9 @@ import { ConversationStore } from './store.js';
 import { Icons } from './icons.js';
 import { MarkdownRenderer } from './markdown.js';
 import { OllamaClient } from './ollamaclient.js';
+import { OutlineClient } from './outlineclient.js';
 import { Sidebar } from './sidebar.js';
+import { TableOfContents } from './contents.js';
 
 const elements = {
 	app: document.getElementById('app'),
@@ -23,8 +25,19 @@ await store.load();
 
 const client = new OllamaClient();
 const composer = new Composer(document.getElementById('composer'), (text) => view.send(text));
-const sidebar = new Sidebar(document.getElementById('sidebar'), store, (id) => view.open(id));
-const view = new ChatView(elements, store, client, new MarkdownRenderer(), composer);
+const sidebar = new Sidebar(document.getElementById('sidebar'), store, (id) => {
+	view.open(id);
+	sidebar.show('contents');
+});
+const contents = new TableOfContents(
+	document.querySelector('.pane-contents'),
+	new OutlineClient(),
+	elements,
+);
+const view = new ChatView(elements, store, client, new MarkdownRenderer(), composer, {
+	onUpdate: (conversation) => (conversation ? contents.show(conversation) : contents.clear()),
+	onScroll: () => contents.markPosition(),
+});
 
 // Only the sidebar reacts to store changes: the chat view repaints explicitly,
 // so a streaming response is not wiped out mid-flight.
@@ -35,6 +48,7 @@ composer.setModels(await client.models());
 document.getElementById('new-chat').addEventListener('click', () => {
 	store.startNew();
 	view.render();
+	sidebar.show('chats');
 });
 
 for (const id of ['collapse', 'expand']) {
@@ -44,4 +58,5 @@ for (const id of ['collapse', 'expand']) {
 }
 
 sidebar.render();
+sidebar.show(store.active ? 'contents' : 'chats');
 view.start();

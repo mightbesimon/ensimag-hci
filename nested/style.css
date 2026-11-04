@@ -212,8 +212,152 @@ button {
 	flex-direction: column;
 	flex: 1;
 	min-height: 0;
-	padding: 0.75rem 8px 0.375rem;
+	padding: 0.75rem 0 0.375rem;
+	overflow: hidden;
 }
+
+/* Two panes side by side; opening a conversation slides the chat list away and
+   brings its table of contents in. */
+.pane-track {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+	width: 200%;
+	transition: transform var(--slide) ease;
+}
+
+.sidebar-body.is-contents .pane-track { transform: translateX(-50%); }
+
+.pane {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	width: 50%;
+	min-height: 0;
+	padding: 0 8px;
+	overflow-y: auto;
+}
+
+/* The off-screen pane is inert; stop its scrollbar showing at the rail's edge. */
+.pane[inert] { overflow: hidden; }
+
+.contents-head {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	flex-shrink: 0;
+	margin-bottom: 0.25rem;
+}
+
+.contents-title {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	color: var(--text-primary);
+	font-size: var(--size-body);
+	font-weight: 500;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.contents-search {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-shrink: 0;
+	margin-bottom: 0.5rem;
+	padding: 0 0.5rem;
+	height: var(--row-h);
+	color: var(--text-muted);
+	background: var(--surface-3);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.contents-search [data-icon] { line-height: 0; }
+
+.contents-search-input {
+	width: 100%;
+	min-width: 0;
+	color: var(--text-primary);
+	font: inherit;
+	background: none;
+	border: 0;
+	outline: none;
+}
+
+.contents-search-input::-webkit-search-cancel-button { display: none; }
+
+.contents-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.contents-item {
+	display: flex;
+	position: relative;
+	align-items: center;
+}
+
+/* Key points sit under their topic; the indent is on the row, so the current
+   marker below still runs down the far left of the outline. */
+.contents-item.is-point { padding-left: 2.25rem; }
+
+/* A straight full-height rule at the left edge, as Google Docs' outline draws
+   it — on the item rather than the rounded row, so it is not clipped round. */
+.contents-item.is-current::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: var(--accent);
+}
+
+.contents-item.is-current .row { color: var(--text-primary); }
+
+.contents-caret {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 1.25rem;
+	height: var(--row-h);
+	color: var(--text-muted);
+	border-radius: var(--radius);
+	line-height: 0;
+}
+
+button.contents-caret:hover { color: var(--text-primary); background: var(--hover); }
+.contents-caret [data-icon] { line-height: 0; transition: rotate 120ms ease; }
+.contents-caret[aria-expanded='true'] [data-icon] { rotate: 90deg; }
+
+.contents-list .contents-topic {
+	flex: 1;
+	min-width: 0;
+	padding-left: 0.25rem;
+	font-weight: 500;
+}
+
+.contents-list .contents-point {
+	flex: 1;
+	min-width: 0;
+	color: var(--text-muted);
+	font-size: var(--size-footnote);
+}
+
+.contents-fold { margin-left: auto; color: var(--text-muted); }
+.contents-fold:disabled { opacity: 0.35; }
+
+.contents-empty {
+	margin: 0.5rem;
+	color: var(--text-muted);
+	font-size: var(--size-footnote);
+}
+
+.pane-contents:not(.is-empty) .contents-empty { display: none; }
 
 .nav-scroll {
 	display: flex;
@@ -422,6 +566,14 @@ button {
 .welcome .composer-slot { width: 100%; max-width: 42rem; }
 
 /* ---------- turns ---------- */
+
+.turn,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+	scroll-margin-top: 1rem;
+}
 
 .turn-user {
 	display: flex;
@@ -752,4 +904,6 @@ button {
 
 	.topbar-expand { animation: none; }
 	.jump-to-latest { transition: none; }
+	.pane-track { transition: none; }
+	.contents-caret [data-icon] { transition: none; }
 }

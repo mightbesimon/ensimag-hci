@@ -26,8 +26,10 @@ export class ChatView {
 	#renderer;
 	#composer;
 	#jump;
+	#onUpdate;
+	#onScroll;
 
-	constructor(elements, store, client, renderer, composer) {
+	constructor(elements, store, client, renderer, composer, listeners) {
 		this.#thread = elements.thread;
 		this.#welcome = elements.welcome;
 		this.#messages = elements.messages;
@@ -38,6 +40,8 @@ export class ChatView {
 		this.#client = client;
 		this.#renderer = renderer;
 		this.#composer = composer;
+		this.#onUpdate = listeners.onUpdate;
+		this.#onScroll = listeners.onScroll;
 		this.#bind();
 	}
 
@@ -53,6 +57,7 @@ export class ChatView {
 			this.#messages.innerHTML = '';
 			this.#composer.focus();
 			this.#refreshJump();
+			this.#onUpdate(null);
 			return;
 		}
 
@@ -62,6 +67,7 @@ export class ChatView {
 		Icons.paint(this.#messages);
 		this.#composer.focus();
 		this.#refreshJump();
+		this.#onUpdate(conversation);
 	}
 
 	/** Paints the active conversation and lands at its most recent turn. */
@@ -89,7 +95,10 @@ export class ChatView {
 			this.#act(button);
 		});
 
-		this.#thread.addEventListener('scroll', () => this.#refreshJump(), { passive: true });
+		this.#thread.addEventListener('scroll', () => {
+			this.#refreshJump();
+			this.#onScroll();
+		}, { passive: true });
 		this.#jump.addEventListener('click', () => this.#scrollToBottom(true));
 	}
 

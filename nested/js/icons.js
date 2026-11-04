@@ -21,7 +21,10 @@ export const Icons = Object.freeze({
 	customize: svg(`<path ${stroke} d="M5 8h9M17 8h2M5 16h2M10 16h9"/><circle ${stroke} cx="15.5" cy="8" r="1.8"/><circle ${stroke} cx="8.5" cy="16" r="1.8"/>`),
 	downloads: svg(`<path ${stroke} d="M12 4.5v10M8 11l4 4 4-4M5 18.5h14"/>`),
 
+	back: svg(`<path ${stroke} d="m14.5 5.5-6.5 6.5 6.5 6.5"/>`),
 	caret: svg(`<path ${stroke} d="m9 6 6 6-6 6"/>`, 14),
+	collapseAll: svg(`<path ${stroke} d="M8 6.5 12 10.5 16 6.5M8 17.5 12 13.5 16 17.5"/>`, 18),
+	expandAll: svg(`<path ${stroke} d="M8 10.5 12 6.5 16 10.5M8 13.5 12 17.5 16 13.5"/>`, 18),
 	chevron: svg(`<path ${stroke} d="m6 9 6 6 6-6"/>`, 12),
 	scrollDown: svg(`<path ${stroke} d="m6 9.5 6 6 6-6"/>`, 18),
 	more: svg(`<circle cx="6" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18" cy="12" r="1.6" fill="currentColor"/>`, 16),

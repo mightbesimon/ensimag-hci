@@ -5,14 +5,15 @@ import time
 from http.server import SimpleHTTPRequestHandler
 
 from .ollama import OllamaStub
+from .outline import OutlineBuilder
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # One mount per study condition. Only these directories are reachable over HTTP;
 # the rest of the repository (server code, .git) stays unexposed.
-BASELINE_ROOT = os.path.join(ROOT, 'baseline')
+DEFAULT_ROOT = os.path.join(ROOT, 'nested')
 MOUNTS = (
-	('/nested', os.path.join(ROOT, 'nested')),
+	('/baseline', os.path.join(ROOT, 'baseline')),
 )
 
 # Pause before the first token, then between tokens, so the interface behaves
@@ -25,9 +26,10 @@ class RequestHandler(SimpleHTTPRequestHandler):
 	protocol_version = 'HTTP/1.1'
 
 	stub = OllamaStub()
+	outline = OutlineBuilder()
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, directory=BASELINE_ROOT, **kwargs)
+		super().__init__(*args, directory=DEFAULT_ROOT, **kwargs)
 
 	def translate_path(self, path):
 		for prefix, root in MOUNTS:
@@ -35,7 +37,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 				continue
 			self.directory = root
 			return super().translate_path(path[len(prefix):] or '/')
-		self.directory = BASELINE_ROOT
+		self.directory = DEFAULT_ROOT
 		return super().translate_path(path)
 
 	def log_message(self, template, *args):
@@ -54,7 +56,12 @@ class RequestHandler(SimpleHTTPRequestHandler):
 		self._send_json(200, handler())
 
 	def do_POST(self):
-		if self.path != '/api/chat':
+		routes = {
+			'/api/chat': self._chat,
+			'/api/outline': self._outline,
+		}
+		handler = routes.get(self.path)
+		if not handler:
 			self.send_error(404)
 			return
 
@@ -62,17 +69,22 @@ class RequestHandler(SimpleHTTPRequestHandler):
 		if request is None:
 			return
 
-		model = request.get('model') or self.stub.MODELS[0]
 		messages = request.get('messages')
 		if not isinstance(messages, list) or not messages:
 			self._send_json(400, {'error': 'messages must be a non-empty list'})
 			return
+		handler(request, messages)
 
+	def _chat(self, request, messages):
+		model = request.get('model') or self.stub.MODELS[0]
 		text = self.stub.reply_text(messages)
 		if request.get('stream', True):
 			self._send_stream(model, text)
 			return
 		self._send_json(200, self.stub.final(model, text, streamed=False))
+
+	def _outline(self, request, messages):
+		self._send_json(200, self.outline.build(messages))
 
 	def _read_json(self):
 		length = int(self.headers.get('Content-Length') or 0)

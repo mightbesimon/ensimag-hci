@@ -1,19 +1,26 @@
-/** Left rail: navigation rows, the Recents group and the account row.
+/** Left rail. Holds two panes on a sliding track: the chat list, and the table
+ *  of contents for the open conversation.
  *
- *  claude.ai's Search row opens a command palette that searches chat *titles*;
- *  it is inert here. There is deliberately no way to search or outline within a
- *  conversation: that is the capability the study's experimental condition adds,
- *  so the baseline must not have it. */
+ *  Opening a conversation slides the chat list away and reveals its outline, so
+ *  the rail navigates *within* a conversation rather than between conversations.
+ *  That is the capability under test; the baseline condition has no equivalent. */
 export class Sidebar {
 	#element;
 	#store;
+	#body;
 	#list;
+	#panes;
 	#onSelect;
 
 	constructor(element, store, onSelect) {
 		this.#element = element;
 		this.#store = store;
+		this.#body = element.querySelector('.sidebar-body');
 		this.#list = element.querySelector('.recents-list');
+		this.#panes = {
+			chats: element.querySelector('.pane-chats'),
+			contents: element.querySelector('.pane-contents'),
+		};
 		this.#onSelect = onSelect;
 		this.#bind();
 	}
@@ -31,12 +38,21 @@ export class Sidebar {
 		this.#element.querySelector('.plan').textContent = this.#store.user.plan;
 	}
 
+	show(pane) {
+		this.#body.classList.toggle('is-contents', pane === 'contents');
+		Object.entries(this.#panes).forEach(([name, element]) => {
+			element.inert = name !== pane;
+		});
+	}
+
 	#bind() {
 		this.#list.addEventListener('click', (event) => {
 			const button = event.target.closest('[data-id]');
 			if (!button) return;
 			this.#onSelect(button.dataset.id);
 		});
+
+		this.#element.querySelector('.contents-back').addEventListener('click', () => this.show('chats'));
 	}
 
 	#escape(text) {

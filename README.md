@@ -5,8 +5,8 @@ filler text.
 
 | Condition | Directory | URL | What it is |
 | --- | --- | --- | --- |
-| **A** — control | `baseline/` | <http://127.0.0.1:11434> | A reproduction of the claude.ai chat interface. Deliberately offers no way to search or outline *within* a conversation, so finding an earlier idea means scrolling. **Finished — do not change it.** |
-| **B** — prototype | `nested/` | <http://127.0.0.1:11434/nested/> | The hierarchical-navigation prototype. Currently an exact copy of the baseline, to be built on. |
+| **A** — control | `baseline/` | <http://127.0.0.1:11434/baseline/> | A reproduction of the claude.ai chat interface. Deliberately offers no way to search or outline *within* a conversation, so finding an earlier idea means scrolling. **Finished — do not change it.** |
+| **B** — prototype | `nested/` | <http://127.0.0.1:11434> | The hierarchical-navigation prototype. Adds the table-of-contents rail to the baseline. |
 
 ## Run it
 
@@ -14,7 +14,7 @@ filler text.
 python3 serve.py
 ```
 
-One server serves both conditions. Nothing to install: Python 3 standard library and
+One server serves both conditions, with the prototype on the root URL. Nothing to install: Python 3 standard library and
 plain HTML, CSS and ES modules, no build step and no package manager.
 
 `nested/` is a **copy**, not a shared library: the two conditions must be free to
@@ -27,6 +27,7 @@ across by hand. The one difference already present is the `localStorage` key
 | Path | What it is |
 | --- | --- |
 | `serve.py` | Entry point. Serves both interfaces and the stub API on one port. |
+| `nested/seed/conversation.json` | Same study material as the baseline's copy; keep the two identical. |
 | `server/handler.py` | HTTP routing, static mounts, chunked NDJSON streaming. |
 | `server/ollama.py` | Ollama payload shapes: `/api/version`, `/api/tags`, `/api/chat`. |
 | `server/gibberish.py` | The filler-prose generator. |
@@ -35,10 +36,26 @@ across by hand. The one difference already present is the `localStorage` key
 | `baseline/js/` | One class per file: store, markdown, composer, sidebar, chat view. |
 | `baseline/seed/conversation.json` | The conversation participants start from. |
 | `nested/` | Condition B, same file layout as `baseline/`. |
+| `nested/js/contents.js` | The table-of-contents rail: topics, key points, collapsing. |
+| `server/outline.py` | Groups a conversation into topics. Serves `POST /api/outline`. |
 
 Only `baseline/` and `nested/` are reachable over HTTP; the server code, `.git` and
 the rest of the repository are not served. `prototype/` is a separate, unrelated piece
 of work and is untouched by any of this.
+
+## The table of contents (condition B)
+
+Opening a conversation slides the chat list away and shows its outline, with a
+back arrow to return. Two levels: a **topic** is a phase of the conversation
+spanning several exchanges, and its **key points** are moments within that
+phase. Both jump to a message. Topics collapse individually or all at once, and
+the Search field filters topics and points rather than conversations.
+
+The outline comes from `POST /api/outline`, so the interface only ever sees
+`{topics: [{title, start, points: [{title, start}]}]}`. A real deployment would
+have that endpoint ask the model; the stub writes the seeded conversations'
+outlines by hand and groups anything typed live by chance — seeded from the
+message text, so the same conversation always yields the same outline.
 
 ## The stub backend
 
@@ -64,8 +81,10 @@ the string `Ollama is running`, and only the chat surface is implemented (no
 
 ## The seed conversation
 
-Each condition has its own `seed/conversation.json`, currently holding the same
-**placeholder content**. Replace the
+Each condition has its own `seed/conversation.json`, holding the same
+**placeholder content** — two long conversations (twelve exchanges each) plus
+three short ones. Keep the two files identical: if the conditions show different
+material the comparison between them is not valid. Replace the
 `conversations` array with the scripted multi-topic conversation from the experimental
 plan, then **increment the top-level `version`**: the store compares it against each
 browser's saved copy and re-seeds when they differ, so every participant starts from
