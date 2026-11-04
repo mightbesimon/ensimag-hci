@@ -4,6 +4,8 @@ const PIN_THRESHOLD = 120;
 
 const RELATIVE = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
 
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)');
+
 const UNITS = Object.freeze([
 	['year', 31536000],
 	['month', 2592000],
@@ -23,6 +25,7 @@ export class ChatView {
 	#client;
 	#renderer;
 	#composer;
+	#jump;
 
 	constructor(elements, store, client, renderer, composer) {
 		this.#thread = elements.thread;
@@ -30,6 +33,7 @@ export class ChatView {
 		this.#messages = elements.messages;
 		this.#dock = elements.dock;
 		this.#title = elements.title;
+		this.#jump = elements.jump;
 		this.#store = store;
 		this.#client = client;
 		this.#renderer = renderer;
@@ -48,6 +52,7 @@ export class ChatView {
 			this.#welcome.querySelector('.composer-slot').append(this.#composer.element);
 			this.#messages.innerHTML = '';
 			this.#composer.focus();
+			this.#refreshJump();
 			return;
 		}
 
@@ -56,6 +61,7 @@ export class ChatView {
 			.map((message, index) => this.#turn(message, index, conversation)).join('');
 		Icons.paint(this.#messages);
 		this.#composer.focus();
+		this.#refreshJump();
 	}
 
 	/** Paints the active conversation and lands at its most recent turn. */
@@ -82,6 +88,9 @@ export class ChatView {
 			if (!button) return;
 			this.#act(button);
 		});
+
+		this.#thread.addEventListener('scroll', () => this.#refreshJump(), { passive: true });
+		this.#jump.addEventListener('click', () => this.#scrollToBottom(true));
 	}
 
 	#act(button) {
@@ -117,7 +126,7 @@ export class ChatView {
 		for await (const fragment of this.#client.stream(this.#composer.model, history)) {
 			text += fragment;
 			prose.innerHTML = this.#renderer.render(text);
-			this.#keepPinned();
+			this.#followTail();
 		}
 
 		this.#store.replaceLast(text);
@@ -167,13 +176,27 @@ export class ChatView {
 		setTimeout(() => { button.innerHTML = original; }, 1200);
 	}
 
-	#keepPinned() {
-		const distance = this.#thread.scrollHeight - this.#thread.scrollTop - this.#thread.clientHeight;
-		if (distance > PIN_THRESHOLD) return;
-		this.#scrollToBottom();
+	/** Keeps a streaming reply in view, unless the reader has scrolled away. */
+	#followTail() {
+		if (this.#atBottom()) this.#scrollToBottom();
+		this.#refreshJump();
 	}
 
-	#scrollToBottom() {
-		this.#thread.scrollTop = this.#thread.scrollHeight;
+	#atBottom() {
+		return this.#thread.scrollHeight - this.#thread.scrollTop - this.#thread.clientHeight <= PIN_THRESHOLD;
+	}
+
+	#refreshJump() {
+		const show = Boolean(this.#store.active) && !this.#atBottom();
+		this.#jump.classList.toggle('is-visible', show);
+		this.#jump.inert = !show;
+	}
+
+	#scrollToBottom(smooth = false) {
+		this.#thread.scrollTo({
+			top: this.#thread.scrollHeight,
+			behavior: smooth && !REDUCED_MOTION.matches ? 'smooth' : 'auto',
+		});
+		this.#refreshJump();
 	}
 }

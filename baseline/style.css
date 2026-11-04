@@ -38,6 +38,7 @@
 	--shadow-composer: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.035);
 	--shadow-composer-focus: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.075);
 	--shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.12);
+	--overlay: rgba(255, 255, 255, 0.8);
 
 	/* anthropic-sans and anthropic-serif are not redistributable; these are the
 	   fallback stacks the app itself declares behind them. */
@@ -88,6 +89,7 @@
 		--shadow-composer: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.25);
 		--shadow-composer-focus: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.4);
 		--shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.5);
+		--overlay: rgba(48, 48, 48, 0.85);
 	}
 }
 
@@ -570,6 +572,7 @@ button {
 /* ---------- composer ---------- */
 
 .dock {
+	position: relative;
 	flex-shrink: 0;
 	width: 100%;
 	max-width: var(--transcript-width);
@@ -577,6 +580,38 @@ button {
 	padding: 0 1rem;
 	background: var(--page);
 }
+
+/* Floats over the transcript just above the composer, as claude.ai's
+   jump-to-latest control does. */
+.jump-to-latest {
+	display: inline-flex;
+	position: absolute;
+	left: 50%;
+	bottom: calc(100% + 0.75rem);
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	color: var(--text-primary);
+	background: var(--overlay);
+	border: 0.5px solid var(--border);
+	border-radius: 50%;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+	opacity: 0;
+	transform: translateX(-50%);
+	transition: opacity 200ms ease, box-shadow 200ms ease;
+	line-height: 0;
+	pointer-events: none;
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+}
+
+.jump-to-latest.is-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.jump-to-latest:hover { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16); }
 
 .composer-box {
 	position: relative;
@@ -716,4 +751,5 @@ button {
 	}
 
 	.topbar-expand { animation: none; }
+	.jump-to-latest { transition: none; }
 }

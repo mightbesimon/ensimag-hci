@@ -13,6 +13,7 @@ const elements = {
 	messages: document.getElementById('messages'),
 	dock: document.getElementById('dock'),
 	title: document.getElementById('chat-title'),
+	jump: document.getElementById('jump'),
 };
 
 Icons.paint(document.body);

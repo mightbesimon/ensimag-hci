@@ -23,6 +23,7 @@ export const Icons = Object.freeze({
 
 	caret: svg(`<path ${stroke} d="m9 6 6 6-6 6"/>`, 14),
 	chevron: svg(`<path ${stroke} d="m6 9 6 6 6-6"/>`, 12),
+	scrollDown: svg(`<path ${stroke} d="m6 9.5 6 6 6-6"/>`, 18),
 	more: svg(`<circle cx="6" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18" cy="12" r="1.6" fill="currentColor"/>`, 16),
 	share: svg(`<path ${stroke} d="M12 15.5V4.5M8.5 8 12 4.5 15.5 8M5.5 13v5a1.5 1.5 0 001.5 1.5h10a1.5 1.5 0 001.5-1.5v-5"/>`),
 
