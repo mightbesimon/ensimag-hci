@@ -1,13 +1,15 @@
 /** Talks to the chat API over NDJSON. Works against the stub backend in
  *  server/ and against a real Ollama daemon without change. */
 export class OllamaClient {
-	/** `available` and `detail` are this server's additions to Ollama's payload:
-	 *  an entry backed by a real daemon is unusable when none is running. */
+	/** `live`, `available` and `detail` are this server's additions to Ollama's
+	 *  payload: `live` marks the entry a real daemon answers, which is unusable
+	 *  when none is running. */
 	async models() {
 		const response = await fetch('/api/tags');
 		const payload = await response.json();
 		return payload.models.map((entry) => ({
 			name: entry.name,
+			live: entry.live === true,
 			available: entry.available !== false,
 			detail: entry.detail || '',
 		}));

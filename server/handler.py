@@ -82,17 +82,20 @@ class RequestHandler(SimpleHTTPRequestHandler):
 	def _tags(self):
 		"""Ollama's own payload, plus whether each entry can actually be used.
 
-		`available` and `detail` are extensions; an Ollama client ignores them.
+		`live`, `available` and `detail` are extensions; an Ollama client ignores
+		them. `live` marks the entry a real daemon answers, so the interface can
+		prefer it without matching on a label.
 		"""
 		payload = self.stub.tags()
-		live = self.daemon.available()
+		running = self.daemon.available()
 		for entry in payload['models']:
-			if entry['name'] != LIVE_MODEL:
+			entry['live'] = entry['name'] == LIVE_MODEL
+			if not entry['live']:
 				entry['available'] = True
 				entry['detail'] = ''
 				continue
-			entry['available'] = live
-			entry['detail'] = 'Local Ollama' if live else 'Ollama is not running'
+			entry['available'] = running
+			entry['detail'] = 'Local Ollama' if running else 'Ollama is not running'
 		return payload
 
 	def _chat(self, request, messages):

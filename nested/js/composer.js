@@ -41,7 +41,10 @@ export class Composer {
 				+ `<span>${this.#label(model.name)}</span>${detail}</button>`;
 		}).join('');
 
-		const usable = models.find((model) => model.available) || models[0];
+		// Prefer a real model when one is running; fall back to the stub otherwise.
+		const usable = models.find((model) => model.live && model.available)
+			|| models.find((model) => model.available)
+			|| models[0];
 		this.#selectModel(usable.name);
 	}
 
